@@ -1,6 +1,6 @@
 # Windows Installer Fallback Proposal
 
-**Status:** Approved by founder on 2026-07-19 for the exact unsigned, local-only proof; implementation in progress
+**Status:** Approved and executed on 2026-07-19; `no-go` because uninstall leaves the cached installer executable
 **Prepared:** 2026-07-18
 **Decision:** OD-14
 **Predecessor evidence:** `docs/reviews/INSTALLER-SPIKE.md`
@@ -26,6 +26,12 @@ whether NSIS fixes the install/start/uninstall failures observed with Squirrel.W
 If approved, this authorizes one exact development dependency and the local proof work below. It does not authorize
 signing spend, a downloaded public build, outside testing, publishing, deployment, or an update system. Those remain
 separately gated by OD-11 and the Task 4 release checks.
+
+## Executed result
+
+The approved proof was executed on 2026-07-19. The build and application lifecycle passed, but the standard template left `%LOCALAPPDATA%\ascend-updater\installer.exe` after uninstall. This is a defined stop condition, so the standard route is `no-go`. See `docs/reviews/NSIS-INSTALLER-PROOF.md`.
+
+No custom macro was added automatically. The exact next proof is separately proposed in `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` at OD-16.
 
 ## Why this route
 
@@ -87,6 +93,7 @@ appId: com.ascend.desktop
 productName: Ascend
 directories:
   output: out/nsis
+publish: null
 win:
   target:
     - target: nsis
@@ -103,6 +110,7 @@ nsis:
   createStartMenuShortcut: true
   runAfterFinish: false
   deleteAppDataOnUninstall: false
+  differentialPackage: false
   unicode: true
   warningsAsErrors: true
   shortcutName: Ascend
@@ -124,6 +132,10 @@ Configuration rationale:
 - `runAfterFinish: false` makes start evidence explicit and repeatable. Product UX may revisit this after the proof.
 - `deleteAppDataOnUninstall: false` preserves the user's local profile. The proof must separately verify that program
   files are removed and synthetic profile data remains.
+- `publish: null` explicitly disables repository auto-detection for update metadata, while `--publish never` remains
+  a second fail-safe against artifact upload.
+- `differentialPackage: false` prevents update blockmaps. The controlled first build on 2026-07-19 stopped after the
+  default behavior created a blockmap and inferred the GitHub repository despite `--publish never`; no upload occurred.
 - Unicode and warnings-as-errors are stated explicitly even though they are current defaults.
 - `signExecutable: false` makes the unsigned proof fail-safe even if signing-related environment variables exist.
 - No custom script/include, web target, publisher, updater, protocol handler, file association, or launch-on-login

@@ -1,6 +1,6 @@
 # Specification: Ascend Version 1
 
-**Status:** Foundation architecture and stack proposal approved; Tasks 2 and 3 complete; Task 4's exact unsigned NSIS fallback proof approved on 2026-07-19 and in progress
+**Status:** Foundation architecture and stack proposal approved; Tasks 2 and 3 complete; Task 4 has Squirrel and standard-NSIS `no-go` results and is blocked at OD-16
 **Last updated:** 2026-07-19
 
 ## Approved foundation and remaining gates
@@ -191,7 +191,7 @@ uv run --locked pytest tests/test_scaffold.py -q
 .\.tools\node-v22.23.1-win-x64\npm.cmd run package
 ```
 
-Task 4's Squirrel proof failed and its maker/default `make` command were removed. On 2026-07-19, OD-14 approved the exact unsigned, local-only NSIS proof in `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`. The proof must wrap the unchanged Forge package and may not add publishing or an updater. Signing still requires separate approval before spend.
+Task 4's Squirrel proof failed and its maker/default `make` command were removed. OD-14's exact unsigned standard-NSIS proof then passed the tested application lifecycle but failed uninstall cleanup because electron-builder retained `%LOCALAPPDATA%\ascend-updater\installer.exe`. The route is `no-go` under the approved criteria. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the separately gated OD-16 proof. Signing still requires separate approval before spend.
 
 ## Proposed project structure
 

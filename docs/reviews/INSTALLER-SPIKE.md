@@ -1,6 +1,6 @@
 # Installer, Signing, SmartScreen, and AV Spike
 
-**Status:** `no-go` for the Squirrel.Windows route; exact unsigned local NSIS fallback proof approved on 2026-07-19 and in progress
+**Status:** `no-go` for Squirrel.Windows and standard electron-builder NSIS; Task 4 blocked at OD-16
 **Evidence date:** 2026-07-18
 **Owner task:** Task 4 in `tasks/todo.md`
 
@@ -206,6 +206,10 @@ was silently installed:
 
 OD-14 was approved by the founder on 2026-07-19. It authorizes only the exact unsigned, local-only NSIS proof;
 signing spend, publishing, an updater, real data, and outside distribution remain prohibited.
+
+The OD-14 proof has now been executed. Standard NSIS passed build, install, direct-shortcut launch, WM_CLOSE, installed-payload integrity, program-file cleanup, synthetic profile retention, reinstall, and Defender checks. It failed because uninstall left the complete unsigned installer at `%LOCALAPPDATA%\ascend-updater\installer.exe`. The exact evidence and supply-chain record are in `docs/reviews/NSIS-INSTALLER-PROOF.md`.
+
+Task 4 remains blocked. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the separately approval-gated OD-16 proof; no custom NSIS macro has been added.
 
 ## Five-axis review
 

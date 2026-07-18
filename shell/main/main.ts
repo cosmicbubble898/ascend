@@ -75,6 +75,7 @@ function exitAfterStartupFailure(error: unknown): void {
 function startApplication(): void {
   registerApplicationScheme();
   app.enableSandbox();
+  app.setAppUserModelId("com.ascend.desktop");
 
   void app
     .whenReady()

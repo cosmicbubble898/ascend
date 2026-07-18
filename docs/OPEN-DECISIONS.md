@@ -39,7 +39,8 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 
 - **Decision:** Approve the exact unsigned, local-only `electron-builder@26.15.7` NSIS proof around the unchanged prepackaged Forge output.
 - **Boundary:** No signing spend, publishing, updater, web installer, custom NSIS script, real credentials, real user data, outside distribution, or deployment.
-- **Record:** `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md` and `docs/reviews/INSTALLER-SPIKE.md`.
+- **Outcome:** The proof executed and returned `no-go`: uninstall leaves `%LOCALAPPDATA%\ascend-updater\installer.exe`.
+- **Record:** `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`, `docs/reviews/NSIS-INSTALLER-PROOF.md`, and `docs/reviews/INSTALLER-SPIKE.md`.
 
 ## Blocking before application data or live integration work
 
@@ -99,6 +100,14 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Question:** Approve the exact hosting/environment model, callback domains, provider app registrations, secrets store, token exchange/refresh design, logging/redaction, abuse controls, availability target, incident response, and cost envelope.
 - **Recommendation:** Decide this during the first provider implementation slice after its provider profile and scopes are re-verified from official sources.
 - **Blocks:** Creating cloud resources or provider apps, storing live credentials, and connecting a live provider account. It does not block local stack research or synthetic adapter/contract tests.
+
+### OD-16 — Exact non-recursive NSIS installer-cache cleanup
+
+- **Question:** Approve the exact proof in `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md`?
+- **Evidence:** Standard NSIS passes the tested lifecycle but always copies the full installer to `%LOCALAPPDATA%\ascend-updater\installer.exe` and does not remove it during uninstall.
+- **Recommendation:** Add one separately reviewed `customUnInstall` macro that deletes only that exact file and removes the directory only when empty. Explicitly reject recursion, wildcards, any other macro/action, and deletion of unexpected sentinel content.
+- **Approval text:** `Approved: WINDOWS-INSTALLER-CLEANUP-PROPOSAL. Proceed with the exact unsigned, local-only non-recursive NSIS cache-cleanup proof. No signing spend, publishing, updater, real credentials/data, outside testing, or deployment.`
+- **Blocks:** Task 4 completion, Task 5, clean-machine release evidence, outside testing, and public installer distribution.
 
 ## Future organization decisions
 

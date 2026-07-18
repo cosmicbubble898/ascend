@@ -1,6 +1,6 @@
 # Ascend Task Checklist
 
-Only one task may be in progress at a time. The architecture and stack proposal are approved. Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its exact unsigned local NSIS proof was approved on 2026-07-19 and is in progress. OD-03 selected synthetic-only plain storage. Retained signing, encryption-before-real-data, credential, provider, and production gates apply at their named blocking points.
+Only one task may be in progress at a time. The architecture and stack proposal are approved. Tasks 2 and 3 are complete. Task 4 has `no-go` results for Squirrel and standard electron-builder NSIS and is blocked at OD-16's exact cleanup proof. OD-03 selected synthetic-only plain storage. Retained signing, encryption-before-real-data, credential, provider, and production gates apply at their named blocking points.
 
 ## Task 0: Human approval gate
 
@@ -79,7 +79,7 @@ Only one task may be in progress at a time. The architecture and stack proposal 
 
 ## Task 4: Run the early installer/signing/AV spike
 
-**Status:** In progress — OD-14 approved the exact unsigned local NSIS proof on 2026-07-19 after the Squirrel launcher and uninstall failed; no signing spend or outside distribution.
+**Status:** Blocked at OD-16 — Squirrel failed its launcher/uninstall checks; standard NSIS passed the app lifecycle but left `%LOCALAPPDATA%\ascend-updater\installer.exe` after uninstall; no signing spend or outside distribution.
 
 **Description:** Package the approved minimal skeleton and test the Windows install/start/exit/uninstall path early. Research current signing options and eligibility from official sources. Do not buy a certificate or service without separate founder approval.
 
@@ -89,6 +89,8 @@ Only one task may be in progress at a time. The architecture and stack proposal 
 - [x] Current signing options, cost, eligibility, renewal, and required binary coverage are documented.
 - [ ] If signing is approved and available, every executable and helper is signed and SmartScreen/AV observations are recorded.
 - [x] Signing is deferred; the unresolved risk and prohibition on outside-test distribution are recorded explicitly.
+- [x] Exact local standard-NSIS proof and supply-chain evidence are recorded, including its executable-residue `no-go`.
+- [ ] Founder approves OD-16 before the proposed custom uninstall macro is created.
 
 **Verification:** Installer logs, signature inspection where applicable, clean-machine smoke results, AV/SmartScreen observations, and a written go/fallback/no-go decision.
 

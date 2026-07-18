@@ -10,9 +10,9 @@ This repository is public by founder decision. Local tools, dependencies, builds
 
 ## Current status
 
-**Development started: Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its bounded unsigned NSIS fallback proof was approved on 2026-07-19 and is now in progress. No signing spend occurred.**
+**Development started: Tasks 2 and 3 are complete. Task 4 now has documented `no-go` results for both Squirrel and standard electron-builder NSIS. OD-16 approval is required for the exact non-recursive NSIS cache-cleanup proof. No signing spend occurred.**
 
-Task 1 research and `docs/STACK-VERSION-PROPOSAL.md` were approved on 2026-07-18. Task 2 created the verified Python quality skeleton, and Task 3 created the verified secure Electron shell and combined quality gate. Task 4 built and tested the Electron/Python package, but the Squirrel launcher crashes and uninstall leaves executable residue. OD-14 now authorizes an unsigned local-only NSIS proof that wraps the unchanged Forge package. OD-03 selected synthetic-only plain storage; encryption remains mandatory before real activity, meeting audio, transcripts, memory, or outside testing. Signing spend, publishing an installer, an updater, real credentials, real user data, and production changes remain separately gated.
+Task 1 research and `docs/STACK-VERSION-PROPOSAL.md` were approved on 2026-07-18. Task 2 created the verified Python quality skeleton, and Task 3 created the verified secure Electron shell and combined quality gate. Task 4's Squirrel launcher crashed and its uninstall left executable residue. The approved standard NSIS fallback then passed build, install, direct-shortcut launch, exit, payload cleanup, retention, reinstall, and Defender checks, but left a full installer at `%LOCALAPPDATA%\ascend-updater\installer.exe` after uninstall. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the separately gated fix. OD-03 selected synthetic-only plain storage; encryption remains mandatory before real activity, meeting audio, transcripts, memory, or outside testing. Signing spend, publishing an installer, an updater, real credentials, real user data, and production changes remain separately gated.
 
 ## Read first
 
@@ -23,14 +23,16 @@ Task 1 research and `docs/STACK-VERSION-PROPOSAL.md` were approved on 2026-07-18
 5. `docs/INTEGRATIONS-SPEC.md` — Google Calendar, ClickUp, Asana, Outlook sequencing, and OAuth boundaries
 6. `docs/STACK-VERSION-PROPOSAL.md` — approved runtime and tool versions
 7. `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md` — OD-14 NSIS fallback recommendation and proof gates
-8. `docs/decisions/ADR-0001-individual-first-organization-ready.md` — why tenant, workspace, and membership seams exist from day one
-9. `docs/decisions/ADR-0002-v1-personal-work-integrations.md` — the v1 connected-work decision
-10. `docs/decisions/ADR-0003-mcp-first-provider-integration-gateway.md` — provider MCP/API routing and credential custody
-11. `docs/THREAT-MODEL.md` — assets, trust boundaries, abuse cases, and security gates
-12. `docs/OPEN-DECISIONS.md` — founder decisions and when they become blocking
-13. `docs/FOUNDATION-APPROVAL.md` — recorded approval and retained gates
-14. `tasks/plan.md`, `tasks/todo.md`, and `tasks/integrations-plan.md` — approval-gated plans
-15. `AGENTS.md` and `JUNIOR_WORKFLOW.md` — mandatory engineering process
+8. `docs/reviews/NSIS-INSTALLER-PROOF.md` — exact local fallback result and supply-chain evidence
+9. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` — OD-16 exact non-recursive cleanup proof awaiting approval
+10. `docs/decisions/ADR-0001-individual-first-organization-ready.md` — why tenant, workspace, and membership seams exist from day one
+11. `docs/decisions/ADR-0002-v1-personal-work-integrations.md` — the v1 connected-work decision
+12. `docs/decisions/ADR-0003-mcp-first-provider-integration-gateway.md` — provider MCP/API routing and credential custody
+13. `docs/THREAT-MODEL.md` — assets, trust boundaries, abuse cases, and security gates
+14. `docs/OPEN-DECISIONS.md` — founder decisions and when they become blocking
+15. `docs/FOUNDATION-APPROVAL.md` — recorded approval and retained gates
+16. `tasks/plan.md`, `tasks/todo.md`, and `tasks/integrations-plan.md` — approval-gated plans
+17. `AGENTS.md` and `JUNIOR_WORKFLOW.md` — mandatory engineering process
 
 ## Source-of-truth order
 

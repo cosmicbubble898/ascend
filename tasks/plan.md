@@ -1,6 +1,6 @@
 # Implementation Plan: Ascend Milestone 0 Foundation
 
-**Status:** Foundation architecture and stack/version proposal approved; Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its exact unsigned local NSIS fallback proof was approved on 2026-07-19 and is in progress. OD-03 selected synthetic-only plain storage. Named signing, encryption-before-real-data, credential, provider, and production gates remain in force.
+**Status:** Foundation architecture and stack/version proposal approved; Tasks 2 and 3 are complete. Task 4 has `no-go` results for Squirrel and standard electron-builder NSIS and is blocked at OD-16's exact non-recursive cleanup proof. OD-03 selected synthetic-only plain storage. Named signing, encryption-before-real-data, credential, provider, and production gates remain in force.
 
 ## Overview
 
@@ -56,7 +56,7 @@ Approved foundation architecture
 
 ### Phase 1B — Early distribution-risk spike
 
-- [ ] Task 4: Package the minimal skeleton and run the installer/signing/SmartScreen/AV spike. **OD-14 approved 2026-07-19; exact unsigned local NSIS proof in progress after Squirrel launcher/uninstall `no-go`; no signing spend.**
+- [ ] Task 4: Package the minimal skeleton and run the installer/signing/SmartScreen/AV spike. **Squirrel and standard NSIS are `no-go`; standard NSIS leaves the cached installer executable after uninstall; OD-16 cleanup proof awaits approval; no signing spend.**
 
 ### Checkpoint: Distribution evidence
 

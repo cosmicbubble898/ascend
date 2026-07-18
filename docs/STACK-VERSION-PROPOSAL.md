@@ -1,8 +1,8 @@
 # Ascend Development Stack and Version Proposal
 
-**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 Squirrel route `no-go`; exact NSIS fallback proof approved on 2026-07-19
+**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 Squirrel and standard-NSIS routes `no-go`; cleanup proof gated at OD-16
 **Prepared:** 2026-07-18
-**Installation state:** Task 2 installed the exact Python quality toolchain through `uv.lock`. Task 3 installed the approved project-local Node 22.23.1/npm 10.9.8 toolchain and exact Electron/TypeScript dependencies through `package-lock.json`. Task 4 installed PyInstaller 6.21.0 and temporarily installed Forge's Squirrel maker 7.11.2 for the approved spike. The Squirrel route failed its installed launcher/uninstall acceptance checks, so its maker and active build wiring were removed.
+**Installation state:** Task 2 installed the exact Python quality toolchain through `uv.lock`. Task 3 installed the approved project-local Node 22.23.1/npm 10.9.8 toolchain and exact Electron/TypeScript dependencies through `package-lock.json`. Task 4 installed PyInstaller 6.21.0, removed the failed temporary Forge Squirrel maker, and installed exact `electron-builder@26.15.7` with lifecycle scripts blocked for the approved standard-NSIS proof. Standard NSIS passed the app lifecycle but failed cleanup because it retained the cached installer executable. Its supply-chain and local proof are recorded in `docs/reviews/NSIS-INSTALLER-PROOF.md`.
 
 ## Recommendation
 

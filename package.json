@@ -3,7 +3,7 @@
   "productName": "Ascend",
   "version": "0.0.0",
   "description": "Windows-first local productivity system",
-  "author": "Ascend",
+  "author": "Cosmic Bubble and Codex",
   "private": true,
   "main": "dist/shell/main/main.js",
   "engines": {
@@ -11,21 +11,25 @@
   },
   "packageManager": "npm@10.9.8",
   "scripts": {
-    "test": "npm run test:shell && npm run test:package-filter",
+    "test": "npm run test:shell && npm run test:package-filter && npm run test:installer-policy && npm run test:package-manifest",
     "test:shell": "vitest run shell",
     "test:package-filter": "node --test scripts/package-filter.test.cjs",
-    "format:check": "prettier --check package.json tsconfig.json tsconfig.build.json vitest.config.mts eslint.config.mjs forge.config.cjs scripts/*.cjs shell/**/*.{ts,mts,html,css}",
+    "test:installer-policy": "node --test scripts/installer-policy.test.cjs",
+    "test:package-manifest": "node --test scripts/package-manifest.test.cjs",
+    "format:check": "prettier --check package.json tsconfig.json tsconfig.build.json vitest.config.mts eslint.config.mjs forge.config.cjs electron-builder.config.cjs scripts/*.cjs shell/**/*.{ts,mts,html,css}",
     "lint": "eslint shell --max-warnings 0",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build:engine": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-engine.ps1",
     "build": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-shell.ps1",
-    "package": "npm run build:engine && npm run build && electron-forge package --arch=x64"
+    "package": "npm run build:engine && npm run build && electron-forge package --arch=x64",
+    "build:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-installer.ps1"
   },
   "devDependencies": {
     "@electron-forge/cli": "7.11.2",
     "@electron/fuses": "2.1.3",
     "@types/node": "22.20.1",
     "electron": "43.1.1",
+    "electron-builder": "26.15.7",
     "eslint": "10.7.0",
     "prettier": "3.9.4",
     "typescript": "6.0.3",
