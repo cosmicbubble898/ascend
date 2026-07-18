@@ -96,6 +96,7 @@ There were 26,244 differing bytes. Therefore byte-for-byte reproducible NSIS out
 - Registry verification passed for 705 packages; 112 packages had verified attestations.
 - Runtime npm audit remained 0 vulnerabilities.
 - The full development graph remained at the pre-existing Forge-toolchain baseline of 18 high and 3 low findings; adding electron-builder did not increase those counts.
+- After the public branch update, GitHub Dependabot reported 9 open development-scope alerts: 7 high, 1 medium, and 1 low, all in the same `tar` and `tmp` toolchain paths. GitHub and npm count affected advisories/paths differently; neither reported an Ascend runtime dependency finding.
 - electron-builder resolved `app-builder-lib@26.15.7`, `@electron/rebuild@4.2.0`, and `tar@7.5.20`. The older vulnerable `tar` chain remains confined to the pre-existing Forge development path.
 
 The resolved graph did not contain the proposal's previously observed `app-builder-bin` or `7zip-bin` packages. Instead, pinned electron-builder source downloaded three checksum-verified tool archives into the project-scoped cache:
