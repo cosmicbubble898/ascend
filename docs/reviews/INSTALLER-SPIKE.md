@@ -1,6 +1,6 @@
 # Installer, Signing, SmartScreen, and AV Spike
 
-**Status:** `no-go` for the Squirrel.Windows route; Task 4 remains blocked at OD-14
+**Status:** `no-go` for the Squirrel.Windows route; exact unsigned local NSIS fallback proof approved on 2026-07-19 and in progress
 **Evidence date:** 2026-07-18
 **Owner task:** Task 4 in `tasks/todo.md`
 
@@ -204,9 +204,8 @@ was silently installed:
   the failed Squirrel launcher. The proposal defines dependency, binary-cache, licensing, security, no-updater, and
   input-integrity gates before its first build.
 
-OD-14 requires the founder to approve the exact fallback proposal before dependency installation or implementation.
-Approval would authorize only an unsigned, local-only NSIS proof; signing spend, publishing, an updater, real data,
-and outside distribution remain prohibited.
+OD-14 was approved by the founder on 2026-07-19. It authorizes only the exact unsigned, local-only NSIS proof;
+signing spend, publishing, an updater, real data, and outside distribution remain prohibited.
 
 ## Five-axis review
 

@@ -1,6 +1,6 @@
 # Implementation Plan: Ascend Milestone 0 Foundation
 
-**Status:** Foundation architecture and stack/version proposal approved on 2026-07-18; Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its researched NSIS fallback proposal awaits OD-14 approval. Task 5 is also blocked at OD-03. Named decision, spend, real-data, provider, and production gates remain in force.
+**Status:** Foundation architecture and stack/version proposal approved; Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its exact unsigned local NSIS fallback proof was approved on 2026-07-19 and is in progress. OD-03 selected synthetic-only plain storage. Named signing, encryption-before-real-data, credential, provider, and production gates remain in force.
 
 ## Overview
 
@@ -39,7 +39,8 @@ Approved foundation architecture
 ### Phase 0 — Foundation approval and retained gates
 
 - [x] Task 0A: Approve product, organization-ready, process, quality/security, and integration architecture; resolve OD-01, OD-02, OD-02A, and OD-12.
-- [ ] Task 0B: Select OD-03 before migration/real-data work and record OD-04 before any live provider test. These do not block read-only Task 1 research.
+- [x] Task 0B1: Select OD-03 before migration work. **Option 1 approved 2026-07-19: synthetic-only plain storage; encryption before real data or outside testing.**
+- [ ] Task 0B2: Record OD-04 before any live provider test.
 
 ### Phase 1 — Reproducible skeleton
 
@@ -55,7 +56,7 @@ Approved foundation architecture
 
 ### Phase 1B — Early distribution-risk spike
 
-- [ ] Task 4: Package the minimal skeleton and run the installer/signing/SmartScreen/AV spike. **Blocked at OD-14 after Squirrel launcher/uninstall `no-go`; exact NSIS proof proposed; no signing spend.**
+- [ ] Task 4: Package the minimal skeleton and run the installer/signing/SmartScreen/AV spike. **OD-14 approved 2026-07-19; exact unsigned local NSIS proof in progress after Squirrel launcher/uninstall `no-go`; no signing spend.**
 
 ### Checkpoint: Distribution evidence
 

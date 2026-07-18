@@ -80,6 +80,6 @@ The integration milestone now follows ADR-0003: Ascend is MCP-first with officia
 
 ## Remaining founder choices
 
-The research does not resolve the at-rest storage choice or confirm whether historical credentials were rotated. Those remain explicit items in `docs/FOUNDATION-APPROVAL.md`.
+The research itself did not resolve the at-rest storage choice or confirm whether historical credentials were rotated. The founder later selected OD-03 Option 1 on 2026-07-19: plain storage is synthetic-only and encryption is mandatory before real sensitive data or outside testing. Historical credential rotation remains open in `docs/FOUNDATION-APPROVAL.md`.
 
 The founder has since resolved the confidential-provider credential boundary in ADR-0003: reusable provider app secrets stay in a secure Ascend connection service, while each user authorizes their own provider account. This architectural approval does not authorize dependency installation, code-signing purchases, provider app registration, connection-service/cloud creation, credentials, application code, real-data capture, or deployment.

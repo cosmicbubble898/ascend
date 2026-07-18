@@ -248,7 +248,7 @@ Event descriptions and attachments are excluded by default. A later opt-in requi
 
 ## Remaining gates
 
-- OD-03 must resolve at-rest encryption before real sensitive data or the migration implementation.
+- OD-03 allows only synthetic development storage; encryption must be implemented and proven before any real sensitive data or live integration content is stored.
 - OD-04 must confirm historical credential rotation before any live provider test.
 - Provider app registrations, callback domains, verification/review, connection-service infrastructure, credentials, costs, and live-account access require a separate explicit approval.
 - Exact scopes, tool allowlists, provider route, token storage/refresh, and threat cases must be re-verified and approved in the first provider implementation slice.

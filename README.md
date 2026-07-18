@@ -1,5 +1,7 @@
 # Ascend
 
+Created by **Cosmic Bubble and Codex**. Codex is co-author of the project.
+
 Ascend is a Windows-first productivity system for independent professionals. It combines dictation into any app, bot-free meeting notes, local productivity tracking, assigned tasks from ClickUp and Asana, Google Calendar meetings, a searchable work memory, and controlled access for tools such as ChatGPT and Claude.
 
 Ascend begins as an individual product and is designed to grow into a team and organization platform without replacing its identity, ownership, workspace, permissions, or audit foundations.
@@ -8,9 +10,9 @@ This repository is public by founder decision. Local tools, dependencies, builds
 
 ## Current status
 
-**Development started: Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; the researched NSIS fallback proposal now awaits OD-14 approval. No signing spend occurred.**
+**Development started: Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its bounded unsigned NSIS fallback proof was approved on 2026-07-19 and is now in progress. No signing spend occurred.**
 
-Task 1 research and `docs/STACK-VERSION-PROPOSAL.md` were approved on 2026-07-18. Task 2 created the verified Python quality skeleton, and Task 3 created the verified secure Electron shell and combined quality gate. Task 4 built and tested the Electron/Python package, but the Squirrel launcher crashes and uninstall leaves executable residue. `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md` recommends an unsigned local-only NSIS proof that wraps the unchanged Forge package; OD-14 approval is required before installing it. Task 5 is also blocked by OD-03. Standing authorization does not answer those concrete decisions, authorize signing spend, permit real credentials or user data, or authorize deployment or production changes.
+Task 1 research and `docs/STACK-VERSION-PROPOSAL.md` were approved on 2026-07-18. Task 2 created the verified Python quality skeleton, and Task 3 created the verified secure Electron shell and combined quality gate. Task 4 built and tested the Electron/Python package, but the Squirrel launcher crashes and uninstall leaves executable residue. OD-14 now authorizes an unsigned local-only NSIS proof that wraps the unchanged Forge package. OD-03 selected synthetic-only plain storage; encryption remains mandatory before real activity, meeting audio, transcripts, memory, or outside testing. Signing spend, publishing an installer, an updater, real credentials, real user data, and production changes remain separately gated.
 
 ## Read first
 
@@ -46,7 +48,7 @@ Reality may override a document, but the document and decision record must be up
 ## Planned architecture
 
 - Thin Electron/TypeScript shell for tray, supervision, windows, and overlays
-- Hidden Python engine for capture, transcription, memory, productivity, API, and MCP; CPython 3.13.14 is the researched candidate awaiting approval
+- Hidden Python engine for capture, transcription, memory, productivity, API, and MCP; CPython 3.13.14 is the approved and locked foundation runtime
 - Native Windows helper processes only where Windows APIs require them
 - A single data-access layer owning a local SQLite database
 - A personal tenant, personal workspace, and local actor from the first migration

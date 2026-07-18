@@ -2,12 +2,12 @@
 
 Agents must not guess these decisions. Resolve each item before its blocking point and record the answer in an ADR or approved specification update.
 
-## Foundation decisions resolved on 2026-07-18
+## Decisions resolved on 2026-07-18 and 2026-07-19
 
 ### OD-01 — Approve the v1 specification — resolved 2026-07-18
 
 - **Decision:** The founder approved the v1 foundation and integration architecture and authorized Task 1 official-source stack/version research.
-- **Boundary:** Dependency installation and application implementation still require approval of the Task 1 proposal. OD-03 and OD-04 retain their named gates.
+- **Boundary:** Dependency installation and application implementation still require approval of the Task 1 proposal. OD-03 and OD-04 retained their named gates; OD-03 was later resolved as recorded below.
 - **Record:** `docs/SPEC.md`, `docs/FOUNDATION-APPROVAL.md`, and ADR-0003.
 
 ### OD-02 — Approve the minimal organization-ready schema principle — resolved 2026-07-18
@@ -25,19 +25,23 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 ### OD-15 — Public GitHub repository and deployment operations — resolved 2026-07-18
 
 - **Decision:** Ascend's repository is public on GitHub. The founder authorized repository initialization, commits, pushes, and later deployment operations for approved, verified work.
-- **Safety boundary:** Public-repository publication requires secret/privacy scanning and generated/runtime-data exclusions. Deployment authorization does not silently resolve OD-03, OD-04, OD-11, OD-13, or OD-14; purchase signing, create recurring-cost resources, use real credentials/data, or bypass an approved specification and release gate.
+- **Safety boundary:** Public-repository publication requires secret/privacy scanning and generated/runtime-data exclusions. Deployment authorization did not silently resolve other decisions; OD-03 and OD-14 were later answered explicitly. OD-04, OD-11, and OD-13 remain open, and no approval permits signing spend, recurring-cost resources, real credentials/data, or bypassing an approved specification and release gate.
 - **Repository target:** `cosmicbubble898/ascend`.
 
+### OD-03 — Confirm the v1 at-rest storage posture — resolved 2026-07-19
+
+- **Decision:** Option 1. Plain SQLite/files may contain synthetic development data only. Encryption is mandatory before Ascend stores real work activity, meeting audio, transcripts, memory, or any outside tester's data.
+- **Credential boundary:** Provider credentials remain DPAPI-protected from the first integration.
+- **Boundary:** This permits synthetic migration work only after the exact data-model specification is approved. It does not authorize real data or make an encryption claim.
+- **Record:** `docs/FOUNDATION-APPROVAL.md`, `docs/SPEC.md`, and `docs/THREAT-MODEL.md`.
+
+### OD-14 — Windows installer fallback after Squirrel no-go — resolved 2026-07-19
+
+- **Decision:** Approve the exact unsigned, local-only `electron-builder@26.15.7` NSIS proof around the unchanged prepackaged Forge output.
+- **Boundary:** No signing spend, publishing, updater, web installer, custom NSIS script, real credentials, real user data, outside distribution, or deployment.
+- **Record:** `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md` and `docs/reviews/INSTALLER-SPIKE.md`.
+
 ## Blocking before application data or live integration work
-
-### OD-03 — Confirm the v1 at-rest storage posture
-
-- **Question:** When must database and recording encryption become mandatory?
-- **Context:** Historical documents conflict. The latest handover decision selected ordinary local files for speed.
-- **Recommended choice:** Plain SQLite/files may be used only with synthetic development data. Require encryption before Ascend stores real work activity, meeting audio, transcripts, or memory. Keep provider keys DPAPI-protected from the first integration.
-- **Alternative:** Permit plain storage for founder-only dogfooding, explicitly accepting stolen-disk and same-machine disclosure risk, but require encryption before any outside tester.
-- **Not recommended:** Plain sensitive storage through the public v1 release.
-- **Blocks:** Migration 0001, media storage, public privacy wording, and external testing.
 
 ### OD-04 — Confirm historical credential rotation
 
@@ -95,15 +99,6 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Question:** Approve the exact hosting/environment model, callback domains, provider app registrations, secrets store, token exchange/refresh design, logging/redaction, abuse controls, availability target, incident response, and cost envelope.
 - **Recommendation:** Decide this during the first provider implementation slice after its provider profile and scopes are re-verified from official sources.
 - **Blocks:** Creating cloud resources or provider apps, storing live credentials, and connecting a live provider account. It does not block local stack research or synthetic adapter/contract tests.
-
-### OD-14 — Windows installer fallback after Squirrel no-go
-
-- **Question:** Approve the exact NSIS proof in `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`?
-- **Evidence:** `docs/reviews/INSTALLER-SPIKE.md` records a crashing Squirrel execution stub and incomplete executable cleanup after uninstall.
-- **Comparison result:** Standard offline NSIS is the best individual/consumer proof. WiX MSI is deferred for future enterprise deployment because it requires WiX v3 and creates a launcher stub with optional Squirrel integration. Forge MSIX is deferred because the maker is experimental and practical distribution needs an approved signing/Store path.
-- **Recommendation:** Approve exact `electron-builder@26.15.7` to wrap the unchanged, hardened Forge output through `--prepackaged` in an unsigned, local-only x64 NSIS proof. No updater, web installer, custom NSIS script, signing spend, publishing, real credentials, or user data.
-- **Approval text:** `Approved: WINDOWS-INSTALLER-FALLBACK-PROPOSAL. Proceed with an unsigned, local-only electron-builder@26.15.7 NSIS proof using the existing prepackaged Forge output. No signing spend, publishing, updater, real credentials, or user data.`
-- **Blocks:** Task 4 completion, Task 5, clean-machine release evidence, outside testing, and public distribution.
 
 ## Future organization decisions
 

@@ -1,7 +1,7 @@
 # Specification: Ascend Version 1
 
-**Status:** Foundation architecture and stack proposal approved on 2026-07-18; Tasks 2 and 3 complete; Task 4 blocked at OD-14 after Squirrel installer `no-go`; exact NSIS fallback proof proposed
-**Last updated:** 2026-07-18
+**Status:** Foundation architecture and stack proposal approved; Tasks 2 and 3 complete; Task 4's exact unsigned NSIS fallback proof approved on 2026-07-19 and in progress
+**Last updated:** 2026-07-19
 
 ## Approved foundation and remaining gates
 
@@ -10,11 +10,11 @@
 3. Quality speech-to-text and AI writing use providers chosen by the user with the user's own keys.
 4. Basic offline dictation, memory, activity tracking, and focus calculations run locally.
 5. A personal tenant/account, personal workspace, local actor, membership, ownership, and permission seams exist from the first migration, but team collaboration itself is deferred.
-6. Provider keys remain DPAPI-protected. The at-rest posture for the main database and recordings is unresolved: plain storage may be used only with synthetic development data until OD-03 is approved.
+6. Provider keys remain DPAPI-protected. OD-03 allows plain storage only for synthetic development data; encryption is mandatory before real work activity, meeting audio, transcripts, memory, or outside testing.
 7. Initial v1 includes personal read-only Google Calendar, ClickUp, and Asana connections. Outlook Calendar is the next provider, not an initial-launch blocker.
 8. Provider integrations use an MCP-first gateway with official API/webhook fallback. Google Calendar and Outlook may use their stable APIs first while official MCP services remain preview-stage.
 
-Items 1, 2, 5, 7, and 8 are approved product/architecture decisions. OD-03 still blocks sensitive storage and migration implementation; OD-04 blocks live provider testing.
+Items 1, 2, 5, 6, 7, and 8 are approved product/architecture decisions. OD-03 permits migration development with synthetic data after the exact data-model specification is approved; it still blocks all sensitive real data until encryption is implemented and proven. OD-04 blocks live provider testing.
 
 ## Objective
 
@@ -191,7 +191,7 @@ uv run --locked pytest tests/test_scaffold.py -q
 .\.tools\node-v22.23.1-win-x64\npm.cmd run package
 ```
 
-Task 4's Squirrel proof failed and its maker/default `make` command were removed. `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md` recommends an exact, unsigned, local-only NSIS proof that wraps the unchanged Forge package. OD-14 must approve it before a new installer command or dependency is added. Signing still requires separate approval before spend.
+Task 4's Squirrel proof failed and its maker/default `make` command were removed. On 2026-07-19, OD-14 approved the exact unsigned, local-only NSIS proof in `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`. The proof must wrap the unchanged Forge package and may not add publishing or an updater. Signing still requires separate approval before spend.
 
 ## Proposed project structure
 

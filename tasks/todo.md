@@ -1,6 +1,6 @@
 # Ascend Task Checklist
 
-Only one task may be in progress at a time. The architecture and stack proposal are approved. Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its exact NSIS proof proposal awaits OD-14 approval. Task 5 is also blocked at OD-03. Retained decision, spend, real-data, provider, and production gates apply at their named blocking points.
+Only one task may be in progress at a time. The architecture and stack proposal are approved. Tasks 2 and 3 are complete. Task 4 produced a Squirrel installer `no-go`; its exact unsigned local NSIS proof was approved on 2026-07-19 and is in progress. OD-03 selected synthetic-only plain storage. Retained signing, encryption-before-real-data, credential, provider, and production gates apply at their named blocking points.
 
 ## Task 0: Human approval gate
 
@@ -13,7 +13,7 @@ Only one task may be in progress at a time. The architecture and stack proposal 
 - [x] Founder approves tenant-account versus work-entity separation (OD-02A).
 - [x] Founder approves ADR-0002 product scope and `docs/INTEGRATIONS-SPEC.md` provider scope/sequence.
 - [x] Founder approves ADR-0003: MCP-first/API-fallback transport, secure connection-service credential boundary, per-user grants, and read-only initial-v1.
-- [ ] OD-03 storage posture is answered before migration work.
+- [x] OD-03 Option 1 is recorded: plain storage for synthetic development data only; encryption before real data or outside testing.
 - [ ] Credential rotation status is known before provider testing.
 
 **Verification:** Written approval in the task conversation and corresponding document updates.
@@ -79,7 +79,7 @@ Only one task may be in progress at a time. The architecture and stack proposal 
 
 ## Task 4: Run the early installer/signing/AV spike
 
-**Status:** Blocked at OD-14 — Squirrel launcher and uninstall failed; exact NSIS proof proposed; no signing spend or outside distribution.
+**Status:** In progress — OD-14 approved the exact unsigned local NSIS proof on 2026-07-19 after the Squirrel launcher and uninstall failed; no signing spend or outside distribution.
 
 **Description:** Package the approved minimal skeleton and test the Windows install/start/exit/uninstall path early. Research current signing options and eligibility from official sources. Do not buy a certificate or service without separate founder approval.
 
@@ -109,7 +109,7 @@ Only one task may be in progress at a time. The architecture and stack proposal 
 
 **Verification:** Human review and approval of the data-model spec.
 
-**Dependencies:** Task 4, OD-02A, and OD-03
+**Dependencies:** Task 4 result, OD-02A, approved OD-03 Option 1, and human approval of the exact data-model specification
 **Likely files:** new `docs/DATA-MODEL.md`, `docs/SPEC.md`
 **Estimated scope:** Small
 

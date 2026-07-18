@@ -7,7 +7,7 @@
 
 Do not write migration SQL, ORM models, or production repository code from this template. Task 5 must replace the open sections with exact tables, columns, constraints, lifecycle rules, and abuse-case tests, then obtain human approval before Task 6 begins.
 
-OD-02 and OD-02A are resolved. OD-03 and the exact schema/security review must be resolved before implementation.
+OD-02 and OD-02A are resolved. OD-03 Option 1 permits synthetic-only migration development; the exact schema/security review and human approval are still required before implementation.
 
 ## Required conceptual boundaries
 
@@ -30,7 +30,7 @@ The exact schema must use distinct identifier types and names. An ambiguous `org
 - Tenant/workspace scope on every owned or shareable record
 - Creation, update, deletion, tombstone, provenance, device, and UTC timestamp semantics
 - Migration version, checksum, transaction, retry, corruption, and future-version behavior
-- Data-at-rest behavior selected in OD-03
+- OD-03 synthetic-only storage enforcement and the future encryption boundary
 - Future cloud-identity mapping without changing existing record IDs
 - Member-leaving, export, and organization-owned-data boundaries
 - Personal integration connections keyed by owner actor, tenant, destination workspace, provider, deployment environment, external account, and selected provider workspaces/calendars

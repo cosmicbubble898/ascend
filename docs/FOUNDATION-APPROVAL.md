@@ -1,14 +1,14 @@
 # Ascend Foundation Approval
 
-**Status:** Foundation, integration architecture, and stack proposal approved on 2026-07-18; Task 2 authorized; OD-03 storage and OD-04 credential status remain open
+**Status:** Foundation, integration architecture, and stack proposal approved; OD-03 Option 1 and OD-14 approved on 2026-07-19; OD-04 credential status remains open
 **Prepared:** 2026-07-18
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 ## What this approval covers
 
-The founder approved the product foundation, organization-ready seams, proposed process architecture, quality/security process, risk-first sequence, personal integration scope, MCP-first/API-fallback integration architecture, and `docs/STACK-VERSION-PROPOSAL.md`. This authorizes Task 2's minimal Python package and quality skeleton.
+The founder approved the product foundation, organization-ready seams, proposed process architecture, quality/security process, risk-first sequence, personal integration scope, MCP-first/API-fallback integration architecture, and `docs/STACK-VERSION-PROPOSAL.md`. Tasks 2 and 3 are complete. On 2026-07-19, the founder approved OD-03 Option 1 and the exact unsigned local NSIS proof in `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`.
 
-It authorizes only the approved Python dependencies needed by Task 2. It does not authorize product behavior, a database, Task 3/Electron dependencies, provider apps, callback domains, connection-service/cloud resources, real credentials, real-data capture, GitHub publication, deployment, or production changes.
+The approved NSIS work authorizes only exact `electron-builder@26.15.7` as a development wrapper around the existing prepackaged Forge output. It does not authorize provider apps, callback domains, connection-service/cloud resources, real credentials, real-data capture, signing spend, installer publishing, an updater, outside testing, or production changes.
 
 On 2026-07-18, after Task 2 completed, the founder authorized continued execution of the existing written task sequence while away. This authorizes moving through those tasks one verified task at a time. It does not supply a missing open-decision value, authorize purchases, real credentials, real user data, destructive database work, provider/cloud resource creation, deployment, or production changes. Those named gates remain in force.
 
@@ -100,15 +100,11 @@ Approved as ADR-0003:
 
 Exact provider apps, service hosting, callbacks, secrets, logging, abuse controls, cost, and live use remain gated by OD-13 and explicit approval.
 
-### H. At-rest storage posture — selection required
+### H. At-rest storage posture (OD-03) — approved 2026-07-19
 
-Choose one:
+Option 1 is selected: plain storage is allowed only for synthetic development data. Encryption is required before Ascend stores real meetings, activity, transcripts, or work memory and before outside testing. Provider credentials remain DPAPI-protected from the first integration.
 
-1. **Recommended:** Plain storage is allowed only for synthetic development data. Encryption is required before Ascend stores real meetings, activity, transcripts, or work memory.
-2. Plain storage is allowed for founder-only real-data dogfooding with explicit risk acceptance; encryption is required before any outside tester.
-3. Plain sensitive storage may continue through public v1. This is not recommended because Ascend stores high-sensitivity audio, activity, and memory.
-
-Provider credentials remain DPAPI-protected under every option.
+This decision permits synthetic migration and data-access development only after the exact data-model specification is approved. It does not claim that storage encryption exists.
 
 ### I. Historical credentials — status required
 
@@ -129,11 +125,10 @@ This does not block approval of the documents. It blocks all real provider integ
 
 ## Remaining founder response
 
-The approved sections do not need to be reconfirmed. Before the named blocking points, record:
+The approved sections do not need to be reconfirmed. Before any live provider test, record:
 
 ```text
-Storage: Option 1
 Credentials: [confirmed / not yet / unknown]
 ```
 
-Task 1 official-source stack/version research may proceed now. No dependencies will be installed until the resulting proposal is approved.
+OD-04 does not block synthetic local development. It blocks every provider integration test using a real account or credential.

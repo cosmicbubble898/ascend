@@ -108,9 +108,9 @@ It is not a claim that unimplemented controls already exist. Each control become
 
 ## At-rest storage decision and residual risk
 
-OD-03 remains unresolved. Plain SQLite and recording files expose sensitive content to disk theft, backups, malware, and any process running as the signed-in Windows user. A loopback API token does not protect against same-user malware, and DPAPI protects provider keys but not an otherwise plain database or audio file.
+OD-03 Option 1 was approved on 2026-07-19. Plain SQLite and recording files expose sensitive content to disk theft, backups, malware, and any process running as the signed-in Windows user. A loopback API token does not protect against same-user malware, and DPAPI protects provider keys but not an otherwise plain database or audio file.
 
-Until OD-03 is approved:
+Until encryption is implemented and proven:
 
 - Plain storage may contain synthetic development data only.
 - Do not capture real meetings, real work activity, or private memory into the new application.
@@ -129,7 +129,7 @@ Even with encryption at rest, Ascend cannot protect data from malware or another
 
 ### Before migration 0001
 
-- Approve OD-03 and the exact data model.
+- Enforce OD-03's synthetic-only boundary and approve the exact data model.
 - Define actor, tenant, workspace, membership, device, visibility, audit, retention, and deletion semantics.
 - Write cross-tenant/workspace isolation, ID-confusion, and migration abuse cases first.
 

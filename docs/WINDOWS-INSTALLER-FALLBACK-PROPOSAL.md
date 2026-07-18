@@ -1,6 +1,6 @@
 # Windows Installer Fallback Proposal
 
-**Status:** Proposed for founder approval; no fallback dependency is installed
+**Status:** Approved by founder on 2026-07-19 for the exact unsigned, local-only proof; implementation in progress
 **Prepared:** 2026-07-18
 **Decision:** OD-14
 **Predecessor evidence:** `docs/reviews/INSTALLER-SPIKE.md`
@@ -242,14 +242,15 @@ explicit.
 
 ## Approval requested
 
+**Approval recorded 2026-07-19:** The founder authorized the next documented tasks after the approval boundaries were restated. This records approval of the recommended OD-14 text below and authorizes only the bounded local proof described by this document.
+
 Recommended approval text:
 
 > Approved: `WINDOWS-INSTALLER-FALLBACK-PROPOSAL`. Proceed with an unsigned, local-only
 > `electron-builder@26.15.7` NSIS proof using the existing prepackaged Forge output. No signing spend, publishing,
 > updater, real credentials, or user data.
 
-Until that approval is recorded, `electron-builder` must not be installed and the active Forge configuration must
-retain `makers: []`.
+Signing spend, publishing, deployment, an updater, provider credentials, real user data, and outside distribution remain unapproved. The active Forge configuration retains `makers: []`; electron-builder is used only as the approved wrapper around prepackaged Forge output.
 
 ## Official sources reviewed
 

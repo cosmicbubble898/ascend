@@ -2,7 +2,7 @@
 
 **Status:** Approved logical architecture as of 2026-07-18
 **Version scope:** Individual Windows v1 with organization-ready foundations
-**Runtime versions:** Selected separately in `docs/STACK-VERSION-PROPOSAL.md`; installation remains approval-gated
+**Runtime versions:** Approved and installed task-by-task through `docs/STACK-VERSION-PROPOSAL.md`
 
 ## Purpose
 
@@ -55,7 +55,7 @@ Exactly one data-access layer owns SQLite. Repositories require actor, tenant, a
 
 Migration 0001 will create a stable local actor, personal tenant, personal workspace, owner membership, and device. A tenant is an Ascend account and authorization boundary. A client/company or project mentioned in work memory is a work entity and must use different types, IDs, repositories, and tests.
 
-No real activity, meeting audio, transcript, memory, or other sensitive user data may be stored until OD-03 selects and proves the at-rest posture. Synthetic development data may use ordinary SQLite only within that gate.
+OD-03 permits ordinary SQLite/files only for synthetic development data. No real activity, meeting audio, transcript, memory, or other sensitive user data may be stored until encryption is implemented and proven.
 
 ### 4. Provider integration gateway
 
@@ -127,8 +127,8 @@ Destructive or high-impact operations require stronger confirmation and recovery
 | Individual-first, organization-ready identity/workspace model | Approved                            | ADR-0001                         |
 | Initial Google Calendar, ClickUp, and Asana scope             | Approved                            | ADR-0002                         |
 | MCP-first/API-fallback gateway and OAuth boundary             | Approved                            | ADR-0003                         |
-| Exact runtime and tool versions                               | Proposal awaiting approval          | `docs/STACK-VERSION-PROPOSAL.md` |
-| At-rest database and recording protection                     | Open; blocks migration/real data    | OD-03                            |
+| Exact runtime and tool versions                               | Approved; installed task-by-task    | `docs/STACK-VERSION-PROPOSAL.md` |
+| At-rest database and recording protection                     | Synthetic-only plain storage approved; encryption blocks real data | OD-03             |
 | Historical credential rotation                                | Open; blocks live provider tests    | OD-04                            |
 | Connection service/provider app provisioning                  | Open; blocks cloud/live credentials | OD-13                            |
 

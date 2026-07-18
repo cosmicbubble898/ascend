@@ -1,6 +1,6 @@
 # Ascend Development Stack and Version Proposal
 
-**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 Squirrel route `no-go`; NSIS fallback proof proposed at OD-14
+**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 Squirrel route `no-go`; exact NSIS fallback proof approved on 2026-07-19
 **Prepared:** 2026-07-18
 **Installation state:** Task 2 installed the exact Python quality toolchain through `uv.lock`. Task 3 installed the approved project-local Node 22.23.1/npm 10.9.8 toolchain and exact Electron/TypeScript dependencies through `package-lock.json`. Task 4 installed PyInstaller 6.21.0 and temporarily installed Forge's Squirrel maker 7.11.2 for the approved spike. The Squirrel route failed its installed launcher/uninstall acceptance checks, so its maker and active build wiring were removed.
 
@@ -76,7 +76,7 @@ The direct `@electron/fuses` hook is intentional: Forge 7.11.2's fuses plugin de
 | `ruff`                 |                      0.15.22 | Python linting and formatting                                       |
 | `mypy`                 |                        2.3.0 | Strict static type checking                                         |
 | `pyinstaller`          |                       6.21.0 | Windows engine-sidecar packaging spike                              |
-| `sqlite3`              | Python 3.13 standard library | Synthetic-only local development database until OD-03 is approved   |
+| `sqlite3`              | Python 3.13 standard library | Approved for synthetic-only local development under OD-03            |
 
 FastAPI and Uvicorn are approved choices for the later authenticated loopback surface; they do not need to be installed in the empty Task 2 package unless the task uses them. Avoid `fastapi[standard]` and `uvicorn[standard]` until a measured requirement justifies their extra packages and install surface.
 
@@ -101,7 +101,7 @@ No Python SQLCipher wrapper is approved in this proposal. Current official evide
 Therefore:
 
 1. Task 2 and Task 3 may use no database or standard-library SQLite with synthetic data only.
-2. OD-03 continues to block migration 0001, real user data, recordings, outside testing, and privacy claims.
+2. OD-03 permits migration development with synthetic data after the data-model specification is approved. Encryption continues to block real user data, recordings, outside testing, and encryption privacy claims.
 3. Before Task 5, run an approval-gated Windows encryption spike comparing official SQLCipher and SQLite SEE.
 4. The spike must prove the maintained binding/build path, x64 packaging, key generation and DPAPI custody, journal/WAL protection, wrong-key behavior, migration and rekey behavior, backup/restore, crash recovery, performance, licensing, cost, and PyInstaller compatibility.
 5. Select the engine and binding in a separate ADR. Do not adopt an abandoned community wrapper merely to remove the gate.
@@ -144,7 +144,7 @@ This prevents an untested encryption choice from becoming the permanent storage 
 | Electron 43 on Windows x64                                    | Current stable package and supported major                       | Start, render local page, exit                                 |
 | Forge 7.11.2 on Node 22                                       | Meets Forge's Node floor and avoids the reported Node 24/26 hang | Package smoke; this is not considered proven by metadata alone |
 | Python 3.13 with FastAPI/Uvicorn/pytest/Ruff/mypy/PyInstaller | Package metadata supports the runtime/Windows where applicable   | Locked sync, imports, checks, and sidecar build                |
-| SQLite encryption path                                        | Not yet proven                                                   | Separate OD-03 spike before migration or real data             |
+| SQLite encryption path                                        | Not yet proven                                                   | Required before real data under approved OD-03 Option 1        |
 
 Metadata-level compatibility is enough for this proposal, not for a completion claim. Task 2 and Task 3 must produce real install, test, lint, format, type-check, build, package, and runtime evidence as applicable.
 
