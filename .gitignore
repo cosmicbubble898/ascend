@@ -1,0 +1,53 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.pfx
+secrets/
+
+# Node / Electron
+.tools/
+node_modules/
+dist/
+build/
+out/
+.next/
+coverage/
+*.tsbuildinfo
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Ascend runtime data
+user-data/
+runtime/
+recordings/
+downloads/
+models/
+logs/
+crash-dumps/
+*.pid
+*.dmp
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
