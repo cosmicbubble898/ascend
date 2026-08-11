@@ -1,9 +1,13 @@
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
 const EXPECTED_INSTALLER_POLICY = Object.freeze({
   appId: "com.ascend.desktop",
   electronBuilderVersion: "26.15.7",
+  installerIncludePath: "build/installer.nsh",
+  installerIncludeSha256:
+    "6c3559730fce91e6756c2bb741075481de2f9b7ad2ee715f3400923b6c4aac52",
   outputDirectory: "out/nsis",
 });
 
@@ -20,7 +24,28 @@ const EXPECTED_NSIS = Object.freeze({
   warningsAsErrors: true,
   shortcutName: "Ascend",
   artifactName: "Ascend-Setup-${version}-${arch}.${ext}",
+  include: EXPECTED_INSTALLER_POLICY.installerIncludePath,
 });
+
+const EXPECTED_INSTALLER_INCLUDE_CONTENT = [
+  "!macro customUnInstall",
+  '  Delete "$LOCALAPPDATA\\ascend-updater\\installer.exe"',
+  '  RMDir "$LOCALAPPDATA\\ascend-updater"',
+  "!macroend",
+  "",
+].join("\n");
+
+const EXPECTED_BUILDER_ARGUMENTS = Object.freeze([
+  "--prepackaged",
+  "$proofInput",
+  "--win",
+  "nsis",
+  "--x64",
+  "--publish",
+  "never",
+  "--config",
+  "electron-builder.config.cjs",
+]);
 
 function hasOwn(value, key) {
   return Object.prototype.hasOwnProperty.call(value ?? {}, key);
@@ -37,6 +62,37 @@ function stableJson(value) {
       .join(",")}}`;
   }
   return JSON.stringify(value);
+}
+
+function validateInstallerInclude(content) {
+  if (content !== EXPECTED_INSTALLER_INCLUDE_CONTENT) {
+    return [
+      "The installer include must exactly match the approved non-recursive cleanup macro.",
+    ];
+  }
+  return [];
+}
+
+function extractBuilderArguments(buildScript) {
+  const source = buildScript ?? "";
+  const invocationCount = (source.match(/&\s+\$builderExecutable\b/g) ?? [])
+    .length;
+  if (invocationCount !== 1) {
+    return undefined;
+  }
+
+  const invocation = source.match(
+    /&\s+\$builderExecutable\s*`?\r?\n([\s\S]*?)\r?\n\s*if\s*\(\$LASTEXITCODE\b/,
+  );
+  if (invocation === null) {
+    return undefined;
+  }
+
+  return invocation[1]
+    .replace(/`\r?\n/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter((token) => token !== "`");
 }
 
 function validateInstallerPolicy(state) {
@@ -114,8 +170,38 @@ function validateInstallerPolicy(state) {
   if (win.signExecutable !== false) {
     errors.push("Executable signing must remain disabled for the local proof.");
   }
-  if (hasOwn(nsis, "script") || hasOwn(nsis, "include")) {
-    errors.push("A custom NSIS script or include is not approved.");
+  if (hasOwn(nsis, "script")) {
+    errors.push("A custom NSIS script is not approved.");
+  }
+  if (nsis.include !== EXPECTED_INSTALLER_POLICY.installerIncludePath) {
+    errors.push(
+      `The only approved NSIS include is ${EXPECTED_INSTALLER_POLICY.installerIncludePath}.`,
+    );
+  }
+
+  const installerInclude = state.installerInclude ?? {};
+  if (
+    installerInclude.relativePath !==
+    EXPECTED_INSTALLER_POLICY.installerIncludePath
+  ) {
+    errors.push("The installer include was not loaded from the approved path.");
+  }
+  if (
+    installerInclude.sha256 !== EXPECTED_INSTALLER_POLICY.installerIncludeSha256
+  ) {
+    errors.push("The installer include SHA-256 is not approved.");
+  }
+  if (typeof installerInclude.content !== "string") {
+    errors.push("The approved installer include content is unavailable.");
+  } else {
+    const calculatedSha256 = crypto
+      .createHash("sha256")
+      .update(installerInclude.content, "utf8")
+      .digest("hex");
+    if (calculatedSha256 !== installerInclude.sha256) {
+      errors.push("The installer include content does not match its SHA-256.");
+    }
+    errors.push(...validateInstallerInclude(installerInclude.content));
   }
   if (nsis.perMachine !== false) {
     errors.push("The proof must remain a per-user install.");
@@ -132,20 +218,13 @@ function validateInstallerPolicy(state) {
     );
   }
 
-  const requiredBuildTokens = [
-    "--prepackaged",
-    "--win nsis",
-    "--x64",
-    "--publish never",
-    "--config electron-builder.config.cjs",
-  ];
-  for (const token of requiredBuildTokens) {
-    if (!state.buildScript?.includes(token)) {
-      errors.push(`Installer build script must include ${token}.`);
-    }
-  }
-  if (/--publish\s+(?!never\b)\S+/i.test(state.buildScript ?? "")) {
-    errors.push("Installer build script must use --publish never.");
+  if (
+    stableJson(extractBuilderArguments(state.buildScript)) !==
+    stableJson(EXPECTED_BUILDER_ARGUMENTS)
+  ) {
+    errors.push(
+      "Installer build must use exactly the approved arguments without additional overrides.",
+    );
   }
 
   const identityCall = `app.setAppUserModelId("${EXPECTED_INSTALLER_POLICY.appId}")`;
@@ -175,6 +254,16 @@ function validateInstallerArtifactNames(fileNames) {
 }
 
 function loadInstallerPolicyState(projectRoot) {
+  const installerIncludePath = path.join(
+    projectRoot,
+    ...EXPECTED_INSTALLER_POLICY.installerIncludePath.split("/"),
+  );
+  const installerIncludeStat = fs.lstatSync(installerIncludePath);
+  if (!installerIncludeStat.isFile() || installerIncludeStat.isSymbolicLink()) {
+    throw new Error("The approved installer include must be a regular file.");
+  }
+  const installerIncludeContent = fs.readFileSync(installerIncludePath, "utf8");
+
   return {
     packageJson: JSON.parse(
       fs.readFileSync(path.join(projectRoot, "package.json"), "utf8"),
@@ -191,19 +280,39 @@ function loadInstallerPolicyState(projectRoot) {
       path.join(projectRoot, "shell", "main", "main.ts"),
       "utf8",
     ),
+    installerInclude: {
+      relativePath: EXPECTED_INSTALLER_POLICY.installerIncludePath,
+      content: installerIncludeContent,
+      sha256: crypto
+        .createHash("sha256")
+        .update(installerIncludeContent, "utf8")
+        .digest("hex"),
+    },
   };
 }
 
 function runCli(arguments_) {
   const [command, directory] = arguments_;
-  if (command !== "artifacts" || directory === undefined) {
-    throw new Error("Usage: installer-policy.cjs artifacts <output-directory>");
+  if (command === "repository" && directory !== undefined) {
+    const errors = validateInstallerPolicy(
+      loadInstallerPolicyState(path.resolve(directory)),
+    );
+    if (errors.length > 0) {
+      throw new Error(errors.join("\n"));
+    }
+    return;
   }
-  const artifactNames = fs.readdirSync(directory);
-  const errors = validateInstallerArtifactNames(artifactNames);
-  if (errors.length > 0) {
-    throw new Error(errors.join("\n"));
+  if (command === "artifacts" && directory !== undefined) {
+    const artifactNames = fs.readdirSync(directory);
+    const errors = validateInstallerArtifactNames(artifactNames);
+    if (errors.length > 0) {
+      throw new Error(errors.join("\n"));
+    }
+    return;
   }
+  throw new Error(
+    "Usage: installer-policy.cjs repository <project-root> | artifacts <output-directory>",
+  );
 }
 
 if (require.main === module) {
@@ -216,8 +325,10 @@ if (require.main === module) {
 }
 
 module.exports = {
+  EXPECTED_INSTALLER_INCLUDE_CONTENT,
   EXPECTED_INSTALLER_POLICY,
   loadInstallerPolicyState,
   validateInstallerArtifactNames,
+  validateInstallerInclude,
   validateInstallerPolicy,
 };

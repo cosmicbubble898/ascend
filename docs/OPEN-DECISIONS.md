@@ -2,7 +2,7 @@
 
 Agents must not guess these decisions. Resolve each item before its blocking point and record the answer in an ADR or approved specification update.
 
-## Decisions resolved on 2026-07-18 and 2026-07-19
+## Decisions resolved on 2026-07-18, 2026-07-19, 2026-08-04, and 2026-08-05
 
 ### OD-01 — Approve the v1 specification — resolved 2026-07-18
 
@@ -16,11 +16,11 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Boundary:** The exact migration and at-rest storage implementation remain specification- and OD-03-gated.
 - **Record:** ADR-0001 and `PROJECT-CHARTER.md`.
 
-### OD-02A — Approve tenant versus work-entity terminology — resolved 2026-07-18
+### OD-02A — Approve tenant versus memory-entity/context terminology — resolved 2026-07-18; clarified 2026-08-05
 
-- **Decision:** Yes. An Ascend personal/organization account is a `tenant`; people, clients/companies, and projects inside memory are separate `work entities`.
-- **Invariant:** Never use one `organization` table, type, or ID for both the authorization boundary and a company/client mentioned in memory.
-- **Record:** ADR-0001 and `docs/SPEC.md`.
+- **Decision:** Yes. An Ascend personal/organization account is a `tenant`; every personal or professional subject represented inside memory is a separate memory entity/context. Examples include people, relationships, family, organizations/clients, projects, topics, goals, habits, places, events, health/wellbeing domains, and life areas; the list is intentionally non-exhaustive.
+- **Invariant:** Memory content is user data, never an Ascend account or authorization principal. Never use one `organization` table, type, or ID for both the authorization boundary and an organization/client represented in memory, and apply the same separation to all other memory entities/contexts.
+- **Record:** ADR-0001, `PROJECT-CHARTER.md`, `docs/SPEC.md`, and `docs/DATA-MODEL.md`.
 
 ### OD-15 — Public GitHub repository and deployment operations — resolved 2026-07-18
 
@@ -41,6 +41,20 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Boundary:** No signing spend, publishing, updater, web installer, custom NSIS script, real credentials, real user data, outside distribution, or deployment.
 - **Outcome:** The proof executed and returned `no-go`: uninstall leaves `%LOCALAPPDATA%\ascend-updater\installer.exe`.
 - **Record:** `docs/WINDOWS-INSTALLER-FALLBACK-PROPOSAL.md`, `docs/reviews/NSIS-INSTALLER-PROOF.md`, and `docs/reviews/INSTALLER-SPIKE.md`.
+
+### OD-17 — Windows hardware and permission baseline — resolved 2026-07-19
+
+- **Decision:** Approve `docs/WINDOWS-HARDWARE-BASELINE-PROPOSAL.md`, including all-active-render-endpoint suppression by default, verified mute-before-capture ordering, observable ownership/restoration rules, the explicit Core Audio same-value/final-race limitation, capability-specific onboarding, dynamic devices, and the one-to-six-plus-display test baseline.
+- **Boundary:** Approval authorizes the behavior and task sequence only. A native dependency/toolchain, real microphone capture/data, physical hardware testing, signing spend, outside distribution, and deployment retain their named approvals.
+- **Record:** `docs/WINDOWS-HARDWARE-BASELINE-PROPOSAL.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, and `docs/THREAT-MODEL.md`.
+
+### OD-20 — Preserve a future local screenshot-context capability — resolved 2026-08-04
+
+- **Decision:** Preserve an opt-in future capability that can capture and retain screenshots encrypted on the person's Windows machine and analyze them with an approved local vision/OCR model so raw pixels do not need to leave the device.
+- **Architecture boundary:** Accessibility/window metadata, transient OCR frames, retained screenshots, and derived visual observations remain distinct. Retained screenshots are off by default, visible, pauseable, target/exclusion scoped, retention-bound, local-only, personal/restricted by default, and processed through an isolated network-denied worker without direct database, credential-store, MCP, provider-grant, or unrelated filesystem access.
+- **Implementation boundary:** This decision adds future compatibility only. It does not authorize capture code, a screenshot schema/store, a cadence, real data, a model/runtime, dependency, download, hardware claim, cloud fallback, spending, distribution, or deployment. Continuous screenshot capture/storage and local screenshot vision remain outside v1 unless a later approved release specification changes that scope.
+- **Retained decisions:** The later feature specification must choose capture targets and cadence, retention, encryption/storage format, quotas, backups, deletion cascade, screenshot timeline/search/export behavior, sensitive-content handling, model/runtime, supported hardware, and exact API/package route. It must state honestly that local-only storage cannot guarantee a screenshot contains no password or secret.
+- **Record:** `PROJECT-CHARTER.md`, `docs/SPEC.md`, `docs/ARCHITECTURE.md`, `docs/FUTURE-CAPABILITY-ARCHITECTURE-PROPOSAL.md`, proposed ADR-0004, `docs/THREAT-MODEL.md`, and `tasks/todo.md`.
 
 ## Blocking before application data or live integration work
 
@@ -101,13 +115,37 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Recommendation:** Decide this during the first provider implementation slice after its provider profile and scopes are re-verified from official sources.
 - **Blocks:** Creating cloud resources or provider apps, storing live credentials, and connecting a live provider account. It does not block local stack research or synthetic adapter/contract tests.
 
-### OD-16 — Exact non-recursive NSIS installer-cache cleanup
+### OD-16 — Exact non-recursive NSIS installer-cache cleanup — resolved 2026-08-05
 
-- **Question:** Approve the exact proof in `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md`?
-- **Evidence:** Standard NSIS passes the tested lifecycle but always copies the full installer to `%LOCALAPPDATA%\ascend-updater\installer.exe` and does not remove it during uninstall.
-- **Recommendation:** Add one separately reviewed `customUnInstall` macro that deletes only that exact file and removes the directory only when empty. Explicitly reject recursion, wildcards, any other macro/action, and deletion of unexpected sentinel content.
-- **Approval text:** `Approved: WINDOWS-INSTALLER-CLEANUP-PROPOSAL. Proceed with the exact unsigned, local-only non-recursive NSIS cache-cleanup proof. No signing spend, publishing, updater, real credentials/data, outside testing, or deployment.`
-- **Blocks:** Task 4 completion, Task 5, clean-machine release evidence, outside testing, and public installer distribution.
+- **Decision:** The founder approved the exact proof in `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` on 2026-08-05.
+- **Outcome:** The bounded current-machine proof is `go-local`. Normal uninstall removed the exact cached installer and empty directory. With an unexpected synthetic sentinel, only the cached installer was removed; the sentinel and non-empty directory survived. Install, direct-shortcut launch, `WM_CLOSE`, profile retention, reinstall, payload cleanup, and Defender checks passed.
+- **Implementation boundary:** Only `build/installer.nsh` at its approved SHA-256 is allowed. Recursion, wildcards, `/REBOOTOK`, another variable/path/macro/include, signing spend, publishing, an updater, real credentials/data, outside testing, and deployment remain prohibited.
+- **Progression:** The local result unblocks Task 5 specification work. It does not satisfy clean-machine, managed-environment, signing, SmartScreen, outside-testing, or public-distribution release gates.
+- **Record:** `docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`.
+
+### OD-21 — Installation-identity file contract
+
+- **Question:** What exact filename and application-data path, serialized format and validation limits, Windows ACL/inheritance rules, atomic write/replace and crash-recovery behavior, and reparse-point/symlink policy will protect the random installation identity used by personal bootstrap?
+- **Required scope:** Specify first-run creation, concurrent-process behavior, malformed/missing-file outcomes, backup/restore and cloned-vault handling, diagnostics redaction, uninstall retention, and deterministic tests. The decision must not derive identity from Windows account or hardware attributes.
+- **Blocks:** Task 7 implementation. Recording this decision does not approve a design or authorize Task 7.
+- **Record:** `docs/DATA-MODEL.md`.
+
+### OD-18 — Future capability, runtime-isolation, visual-context, and sensitive-domain architecture
+
+- **Question:** Approve `docs/FUTURE-CAPABILITY-ARCHITECTURE-PROPOSAL.md` and proposed ADR-0004 as the long-term seam for local/cloud AI, local transcription and LLM runtimes, CPU/GPU/NPU backends, OD-20's future local screenshot/vision capability, future meeting bots, speaker identity, and optional holistic personal modules?
+- **Recommendation:** Approve capability-oriented domain boundaries, explicit execution receipts and local/cloud policy, isolated resource-bounded workers, verified model/runtime artifacts, a local-only restricted screenshot/visual-context path, capture-source-neutral meeting records, evidence-based speaker identity, and deny-by-default health/wellbeing/voice/spiritual data classes.
+- **Boundary:** Approval does not select or add screenshot capture/storage, a runtime, dependency, model, model download, cloud resource, provider account, credential, external plugin system, voice profile, health schema/data, real data, spending, distribution, or deployment. Each concrete feature retains its own specification, source/license/security research, TDD, and human approval gate.
+- **Blocks:** The first production feature that would otherwise couple domain code directly to a model/provider/runtime, introduce a local model worker, add a cloud meeting bot or speaker identity, or create a holistic personal data path. It does not block Milestone 0, Task 4, or pure research.
+- **Approval text:** `Approved: FUTURE-CAPABILITY-ARCHITECTURE-PROPOSAL. Adopt OD-18 and ADR-0004. Preserve OD-20's future opt-in encrypted local screenshot and local-vision seam, but keep screenshot capture/storage, local-model, cloud-meeting-bot, speaker-identity, and holistic health/wellness implementation out of the current foundation; each requires a separately specified and approved release scope. Implement only the shared capability, provenance, failure, isolation, and data-class seams alongside the first relevant approved production slice; do not add a runtime, dependency, model, cloud resource, credential, real data, or external plugin system through this approval.`
+
+### OD-19 — Agent OS, skills, tools, durable runs, and external-AI boundaries
+
+- **Question:** Approve `docs/AGENT-OS-AND-SKILLS-ARCHITECTURE-PROPOSAL.md` and proposed ADR-0005 as the long-term seam for Ascend to become a trusted personal agent, Agent OS, and single interface across replaceable cloud/local models, reusable skills, typed tools, connectors, and documented external-agent providers?
+- **Recommendation:** Approve Ascend ownership of identity, workspace, memory, context disclosure, policy, approvals, typed execution, durable run state, verification, and audit. Keep models, skills, tools, connectors, workflows, triggers, grants, approvals, and runs separate; a skill never grants authority and model output never executes directly.
+- **External-AI boundary:** Ascend using provider model APIs, an approved ChatGPT/Claude/other client using Ascend MCP/API, and Ascend invoking a documented external-agent API are separate routes with separate credentials, context, grants, and audit. Browser/UI automation, consumer-session cookies, and private endpoints are not foundational control routes.
+- **Boundary:** Approval does not create or select an agent runtime, skill loader, Skills Hub, workflow engine, durable-run schema, model/provider SDK, external-agent integration, connector, provider account, credential, cloud resource, browser automation, autonomous/background behavior, third-party skill mechanism, real data, spending, distribution, or deployment. Concrete contracts and persistence remain feature-specification, current-source, security, TDD, and human-approval gated.
+- **Blocks:** The first implementation of an agent profile, skill loader, workflow, trigger, durable agent run, model-directed tool, external-agent invocation, autonomous/background execution, multi-agent orchestration, or organization skill catalog. It does not block Milestone 0, Task 4, provider read-only synchronization, or pure research.
+- **Approval text:** `Approved: AGENT-OS-AND-SKILLS-ARCHITECTURE-PROPOSAL. Adopt OD-19 and ADR-0005. Treat Ascend as the trusted agent and single-interface layer; keep models, external agents, skills, tools, connectors, memory, permissions, approvals, and run state separate. Skills never grant authority, model output never executes directly, and external side effects remain typed, policy-checked, previewed, approval-gated, idempotent, verified, and audited. Do not implement an agent runtime, skill loader, autonomous workflow, external ChatGPT/Claude control, dependency, credential, cloud resource, real data, or browser/session automation through this approval.`
 
 ## Future organization decisions
 

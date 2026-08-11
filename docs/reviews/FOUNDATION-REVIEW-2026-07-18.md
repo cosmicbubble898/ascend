@@ -40,6 +40,8 @@ No secret values were opened or copied. Provider testing remains blocked until t
 
 The historical data model uses organization for a client/company entity, while the future-team charter uses organization for the Ascend account that owns workspaces. The charter, spec, ADR, threat model, and tasks now distinguish a tenant account from a work entity and require ID-confusion tests.
 
+The canonical terminology was broadened on 2026-08-05: **memory entity/context** now covers every personal or professional subject represented in memory. The 2026-07-18 wording above remains historical evidence and was never intended to exclude personal context.
+
 ### 8. Hardware and distribution risks were sequenced too late — resolved in plan
 
 The research identifies bot-free meeting capture and Windows installer/AV behavior as early hardware-truth risks. The plan now runs the installer/signing/AV spike after the skeleton, then completes Milestone 0, then runs throwaway meeting-capture and screen-context spikes before production features.

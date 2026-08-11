@@ -5,6 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+. (Join-Path $PSScriptRoot "python-toolchain.ps1")
+$pythonToolchain = Initialize-AscendPythonToolchain -ProjectRoot $projectRoot
+$uvExecutable = $pythonToolchain.UvExecutable
 $entryPoint = Join-Path $projectRoot "src\ascend_engine\__main__.py"
 $distRoot = Join-Path $projectRoot "build\engine"
 $workRoot = Join-Path $projectRoot "build\pyinstaller-work"
@@ -13,7 +16,7 @@ $engineExecutable = Join-Path $distRoot "ascend-engine\ascend-engine.exe"
 
 Push-Location -LiteralPath $projectRoot
 try {
-    & uv run --locked pyinstaller `
+    & $uvExecutable run --locked pyinstaller `
         --clean `
         --console `
         --contents-directory "_internal" `

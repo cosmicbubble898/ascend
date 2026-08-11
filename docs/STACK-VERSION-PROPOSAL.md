@@ -1,8 +1,8 @@
 # Ascend Development Stack and Version Proposal
 
-**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 Squirrel and standard-NSIS routes `no-go`; cleanup proof gated at OD-16
+**Status:** Approved by founder on 2026-07-18; Tasks 2 and 3 complete; Task 4 custom-cleanup NSIS route `go-local`; Task 4A audit remediation verified on 2026-08-10; release gates remain open
 **Prepared:** 2026-07-18
-**Installation state:** Task 2 installed the exact Python quality toolchain through `uv.lock`. Task 3 installed the approved project-local Node 22.23.1/npm 10.9.8 toolchain and exact Electron/TypeScript dependencies through `package-lock.json`. Task 4 installed PyInstaller 6.21.0, removed the failed temporary Forge Squirrel maker, and installed exact `electron-builder@26.15.7` with lifecycle scripts blocked for the approved standard-NSIS proof. Standard NSIS passed the app lifecycle but failed cleanup because it retained the cached installer executable. Its supply-chain and local proof are recorded in `docs/reviews/NSIS-INSTALLER-PROOF.md`.
+**Installation state:** The exact project-local build stack is Node 22.23.2/npm 10.9.8 and uv 0.11.29/Python 3.13.14. Electron 43.3.0, Forge 7.11.2, PyInstaller 6.21.0, and electron-builder 26.15.7 are locked. Lifecycle scripts remained blocked during the clean dependency install. The historical standard-NSIS and 2026-08-05 cleanup results remain in their original reviews; the current patched package and installer proof is in `docs/reviews/AUDIT-REMEDIATION-2026-08-10.md`.
 
 ## Recommendation
 
@@ -15,9 +15,9 @@ This is a version/tooling decision only. It does not authorize application behav
 | Layer              | Proposed version/choice                 | Rationale                                                                                                                                                                                                 |
 | ------------------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Release target     | Windows 11 x64 first                    | Smallest support and packaging surface. Record Windows 10 observations, but do not promise an OS that is outside normal Microsoft support without a later decision.                                       |
-| Build-host Node.js | 22.23.1 LTS                             | Supported LTS and compatible with the selected quality tools. It avoids the current open Electron Forge packaging hang reported on Node 24.16+ and 26.                                                    |
-| npm                | 10.9.8 bundled with Node 22.23.1        | Keeps the Node/npm pair reproducible. Use one `package-lock.json` and `npm ci`.                                                                                                                           |
-| Electron runtime   | 43.1.1 exact                            | Current stable on 2026-07-18; includes Chromium 150 and Node 24.18.0. Electron's embedded Node is distinct from the Node version used to run build tools.                                                 |
+| Build-host Node.js | 22.23.2 LTS                             | Official Node 22 security release, checksum-pinned locally and proven with the complete quality/package gate. It avoids the current open Electron Forge packaging hang reported on Node 24.16+ and 26. |
+| npm                | 10.9.8 bundled with Node 22.23.2        | Keeps the Node/npm pair reproducible. Use one `package-lock.json` and `npm ci`.                                                                                                                       |
+| Electron runtime   | 43.3.0 exact                            | Current stable when rechecked on 2026-08-10; includes Chromium 150.0.7871.212 and Node 24.18.1. Electron's embedded Node is distinct from the build host.                                              |
 | TypeScript         | 6.0.3 exact                             | TypeScript 7.0 does not yet ship a programmatic API, while typescript-eslint officially supports TypeScript below 6.1. Re-evaluate when TypeScript 7.1 and the surrounding toolchain are stable together. |
 | Python             | CPython 3.13.14 x64, standard GIL build | Maintained bugfix line with broad Windows/native-package compatibility. Python 3.14 is newer, but 3.13 is the lower-risk packaging baseline for an audio/native-heavy desktop product.                    |
 
@@ -25,7 +25,7 @@ This is a version/tooling decision only. It does not authorize application behav
 
 | Direct dependency/tool | Exact version | Purpose                                                            |
 | ---------------------- | ------------: | ------------------------------------------------------------------ |
-| `electron`             |        43.1.1 | Desktop runtime                                                    |
+| `electron`             |        43.3.0 | Desktop runtime                                                    |
 | `@electron-forge/cli`  |        7.11.2 | Reproducible packaging pipeline                                    |
 | `@electron/fuses`      |         2.1.3 | Package-time hardening and fuse verification through a Forge hook  |
 | `typescript`           |         6.0.3 | Shell compiler and type checker                                    |
@@ -76,7 +76,7 @@ The direct `@electron/fuses` hook is intentional: Forge 7.11.2's fuses plugin de
 | `ruff`                 |                      0.15.22 | Python linting and formatting                                       |
 | `mypy`                 |                        2.3.0 | Strict static type checking                                         |
 | `pyinstaller`          |                       6.21.0 | Windows engine-sidecar packaging spike                              |
-| `sqlite3`              | Python 3.13 standard library | Approved for synthetic-only local development under OD-03            |
+| `sqlite3`              | Python 3.13 standard library | Approved for synthetic-only local development under OD-03           |
 
 FastAPI and Uvicorn are approved choices for the later authenticated loopback surface; they do not need to be installed in the empty Task 2 package unless the task uses them. Avoid `fastapi[standard]` and `uvicorn[standard]` until a measured requirement justifies their extra packages and install surface.
 
@@ -101,8 +101,8 @@ No Python SQLCipher wrapper is approved in this proposal. Current official evide
 Therefore:
 
 1. Task 2 and Task 3 may use no database or standard-library SQLite with synthetic data only.
-2. OD-03 permits migration development with synthetic data after the data-model specification is approved. Encryption continues to block real user data, recordings, outside testing, and encryption privacy claims.
-3. Before Task 5, run an approval-gated Windows encryption spike comparing official SQLCipher and SQLite SEE.
+2. Under OD-03, Tasks 5 and 6 may proceed with synthetic data after their existing specification and implementation approval gates are satisfied. Proven encryption continues to block real user data, recordings, outside testing, and encryption privacy claims.
+3. Before real data or outside testing, run an approval-gated Windows encryption spike comparing official SQLCipher and SQLite SEE.
 4. The spike must prove the maintained binding/build path, x64 packaging, key generation and DPAPI custody, journal/WAL protection, wrong-key behavior, migration and rekey behavior, backup/restore, crash recovery, performance, licensing, cost, and PyInstaller compatibility.
 5. Select the engine and binding in a separate ADR. Do not adopt an abandoned community wrapper merely to remove the gate.
 
@@ -113,9 +113,9 @@ This prevents an untested encryption choice from becoming the permanent storage 
 ### Node/Electron
 
 - Put exact versions in `package.json`; no `^`, `~`, `latest`, Git URL, or unpinned alias.
-- Set `engines.node` to `22.23.1` and `packageManager` to `npm@10.9.8`.
+- Set `engines.node` to `22.23.2` and `packageManager` to `npm@10.9.8`.
 - Create one authoritative `package-lock.json` with npm 10.9.8.
-- Resolve the lockfile with scripts disabled, inspect all packages that declare install scripts, then permit only the reviewed scripts required for Electron/Forge packaging.
+- Resolve the lockfile with lifecycle scripts disabled and inspect all packages that declare them. The current package proof succeeds with scripts still blocked; enabling any future lifecycle script requires a separate source/security review and approval.
 - Use `npm ci` from the committed lockfile; never use a global Electron or Forge install.
 - Record license and vulnerability-review results. A scanner result informs review but cannot replace it.
 
@@ -176,9 +176,9 @@ Packaging is a separate early spike because success on a development machine is 
 ### Runtimes and desktop
 
 - Node.js release policy and supported lines: https://nodejs.org/en/about/previous-releases
-- Node.js 22.23.1 release: https://nodejs.org/en/blog/release/v22.23.1/
-- npm bundled in Node 22.23.1 source: https://raw.githubusercontent.com/nodejs/node/v22.23.1/deps/npm/package.json
-- Electron 43.1.1 release: https://releases.electronjs.org/release/v43.1.1
+- Node.js 22.23.2 archive: https://nodejs.org/en/download/archive/v22.23.2
+- npm bundled in Node 22.23.2 source: https://raw.githubusercontent.com/nodejs/node/v22.23.2/deps/npm/package.json
+- Electron 43.3.0 release: https://releases.electronjs.org/release/v43.3.0
 - Electron release schedule: https://releases.electronjs.org/schedule
 - Electron security checklist: https://www.electronjs.org/docs/latest/tutorial/security
 - Electron fuses: https://www.electronjs.org/docs/latest/tutorial/fuses

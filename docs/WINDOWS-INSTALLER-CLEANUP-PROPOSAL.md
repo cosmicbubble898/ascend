@@ -1,9 +1,11 @@
 # Windows installer cache-cleanup proof proposal
 
-**Status:** Proposed for founder approval; not implemented
+**Status:** Approved and executed; bounded current-machine result is `go-local`
 **Prepared:** 2026-07-19
+**Executed:** 2026-08-05
 **Decision:** OD-16
 **Predecessor evidence:** `docs/reviews/NSIS-INSTALLER-PROOF.md`
+**Outcome evidence:** `docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`
 
 ## Recommendation
 
@@ -86,13 +88,13 @@ Stop and return to the installer comparison if:
 - the standard payload, shortcut, launch, retention, or reinstall behavior regresses; or
 - clean-machine behavior later differs materially from the development proof.
 
-## Approval requested
+## Approval and outcome
 
 Recommended approval text:
 
 > Approved: `WINDOWS-INSTALLER-CLEANUP-PROPOSAL`. Proceed with the exact unsigned, local-only non-recursive NSIS cache-cleanup proof. No signing spend, publishing, updater, real credentials/data, outside testing, or deployment.
 
-Until approval is recorded, do not create `build/installer.nsh`, loosen the current policy test, or execute a custom NSIS include.
+The founder recorded this approval on 2026-08-05. The exact implementation and bounded current-machine proof passed, including normal cleanup, sentinel preservation, reinstall, profile retention, and Defender scans. The result permits continued local synthetic-data foundation work but does not authorize release, outside testing, signing spend, publishing, an updater, credentials, real data, or deployment. See `docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`.
 
 ## Sources
 

@@ -7,6 +7,7 @@ const { test } = require("node:test");
 const {
   buildFileManifest,
   compareFileManifests,
+  compareInstalledFileManifests,
 } = require("./package-manifest.cjs");
 
 test("package manifest is sorted and records relative path, size, and SHA-256", () => {
@@ -51,6 +52,29 @@ test("package manifest comparison detects added, removed, and changed files", ()
     "removed: removed.dll",
   ]);
   assert.deepEqual(compareFileManifests(before, before), []);
+});
+
+test("installed manifest comparison rejects every unapproved extra file", () => {
+  const expected = [
+    { path: "Ascend.exe", size: 10, sha256: "application" },
+    { path: "resources/app.asar", size: 20, sha256: "asar" },
+  ];
+  const actual = [
+    ...expected,
+    { path: "Uninstall Ascend.exe", size: 30, sha256: "uninstaller" },
+    { path: "unexpected.dll", size: 40, sha256: "unexpected" },
+  ];
+
+  assert.deepEqual(
+    compareInstalledFileManifests(expected, actual, ["Uninstall Ascend.exe"]),
+    ["unexpected installed file: unexpected.dll"],
+  );
+  assert.deepEqual(
+    compareInstalledFileManifests(expected, actual.slice(0, -1), [
+      "Uninstall Ascend.exe",
+    ]),
+    [],
+  );
 });
 
 test("package manifest rejects symbolic-link inputs", (context) => {

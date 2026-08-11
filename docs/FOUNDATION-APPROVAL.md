@@ -28,6 +28,8 @@ Approve ADR-0001: create stable local actor, personal tenant, personal workspace
 
 Approve the terminology boundary: a future multi-member Ascend organization is a tenant account; a person, client/company, or project stored in memory is a work entity. They must not share an `organization` model or ID.
 
+**2026-08-05 terminology clarification:** The examples in the original approval were not intended to limit Ascend memory to work. Current canonical documents use the broader term **memory entity/context** for any personal or professional subject represented in memory. All such content is user data, never an account or authorization principal.
+
 This does not build team features. It prevents a future ownership and authorization rewrite.
 
 **Recommendation:** Approve.

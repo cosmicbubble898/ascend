@@ -1,31 +1,34 @@
 # Installer, Signing, SmartScreen, and AV Spike
 
-**Status:** `no-go` for Squirrel.Windows and standard electron-builder NSIS; Task 4 blocked at OD-16
-**Evidence date:** 2026-07-18
+**Status:** `no-go` for Squirrel.Windows and standard electron-builder NSIS; OD-16 custom-cleanup route `go-local`; release qualification remains open
+**Evidence dates:** 2026-07-18 through 2026-08-10
 **Owner task:** Task 4 in `tasks/todo.md`
 
 ## Decision
+
+The current patched Node/Electron package and hash-bound installer rerun passed on 2026-08-10. Its exact versions, audit state, manifests, artifact hash, Defender result, and limitations are recorded separately in `docs/reviews/AUDIT-REMEDIATION-2026-08-10.md`. The Squirrel and standard-NSIS details below remain historical evidence and are not the current package baseline.
 
 Do not distribute the current Squirrel installer, even for an outside beta. The package builds, installs, and the
 versioned Electron/Python executables run, but the user-facing Squirrel execution stub crashes with access violation
 `0xc0000005`. Uninstall also leaves executable residue. These failures are release blockers independent of signing.
 
-No signing service or certificate was purchased. SmartScreen was not claimed as tested. Task 5 must not start until an
-installer fallback passes this spike in clean Windows environments and OD-03 is resolved.
+No signing service or certificate was purchased. SmartScreen was not claimed as tested. OD-16's later bounded
+current-machine cleanup proof passed and permits Task 5 specification work under synthetic-only OD-03. Clean Windows,
+managed-environment, signing, SmartScreen, outside-testing, and distribution evidence remain mandatory before release.
 
 After recording the failure, the Squirrel maker dependency, default `make` command, updater-launch code, and vendor
 preparation hook were removed from the active foundation. `npm run package` continues to produce only the hardened
 unpacked Electron/Python package. The hashes and Squirrel controls below describe the preserved spike evidence, not an
 active distribution route.
 
-Final cleanup verification passed: 2 pytest tests, 3 Vitest tests, 5 Node packaging-policy tests, Ruff, strict mypy,
+The 2026-07-18 final cleanup verification passed: 2 pytest tests, 3 Vitest tests, 5 Node packaging-policy tests, Ruff, strict mypy,
 Prettier, ESLint, TypeScript, the PyInstaller sidecar build, the Forge package, fuse readback, and a hidden-window
 runtime smoke. The final packaged engine printed `Ascend engine 0.0.0`; the shell created a window titled `Ascend`,
 accepted `WM_CLOSE`, and left zero processes. The active ASAR contains no Squirrel file or stale build output. The
 active dependency graph has 0 runtime audit findings, 575 verified registry signatures, 85 attestations, and the
 existing development-only 18 high/3 low Forge toolchain findings.
 
-## Scope and environment
+## Historical Squirrel scope and environment
 
 - Windows 11 x64, build `10.0.26200`
 - Node.js `22.23.1`, npm `10.9.8`, Electron `43.1.1`, Forge `7.11.2`
@@ -209,7 +212,9 @@ signing spend, publishing, an updater, real data, and outside distribution remai
 
 The OD-14 proof has now been executed. Standard NSIS passed build, install, direct-shortcut launch, WM_CLOSE, installed-payload integrity, program-file cleanup, synthetic profile retention, reinstall, and Defender checks. It failed because uninstall left the complete unsigned installer at `%LOCALAPPDATA%\ascend-updater\installer.exe`. The exact evidence and supply-chain record are in `docs/reviews/NSIS-INSTALLER-PROOF.md`.
 
-Task 4 remains blocked. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the separately approval-gated OD-16 proof; no custom NSIS macro has been added.
+OD-16 was approved on 2026-08-05. Its exact custom cleanup include and bounded current-machine proof passed. The
+implementation, artifact, lifecycle, sentinel, Defender, and retained-gate evidence is in
+`docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`.
 
 ## Five-axis review
 
@@ -226,8 +231,8 @@ Task 4 remains blocked. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the
 - **Compatibility:** Windows x64 package and current-machine runtime are proven. Clean Windows, policy-managed devices,
   signing, SmartScreen, fallback installer behavior, and any updater remain unproven.
 
-No active-code blocking finding remains inside the unpacked foundation. Task 4 itself remains blocked because no
-installer route has passed.
+No active-code blocking finding remains inside the unpacked foundation. Task 4 now has a passing local-development
+route, while clean-machine and release qualification remain explicitly open.
 
 ## Official sources reviewed
 

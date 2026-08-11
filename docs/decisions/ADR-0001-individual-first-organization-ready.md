@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in principle on 2026-07-18. Exact schema requires specification approval before implementation.
+Accepted in principle on 2026-07-18. Memory terminology was broadened on 2026-08-05 to cover personal and professional context. Exact schema requires specification approval before implementation.
 
 ## Context
 
@@ -24,7 +24,7 @@ Use an individual-first, organization-ready design:
 - Data-access, API, search, background-job, file, and audit interfaces accept explicit tenant and workspace context.
 - Personal capture is private by default and requires deliberate sharing.
 - Important operations record the acting actor or client and the relevant tenant and workspace.
-- A tenant account is structurally distinct from a work entity. People, client/companies, and projects inside memory must not share the tenant-account model or identifier namespace.
+- A tenant account is structurally distinct from every memory entity/context. Any personal or professional subject inside memory—including people, relationships, family, organizations/clients, projects, topics, goals, habits, places, events, and life areas—must not share the tenant-account model or identifier namespace.
 
 V1 will not implement team invitations, shared cloud synchronization, organization administration, centralized billing, SSO, SCIM, or enterprise reporting.
 
@@ -45,17 +45,17 @@ V1 will not implement team invitations, shared cloud synchronization, organizati
 - Advantage: appears to preserve a simple v1.
 - Rejected: scattered nullable fields do not create a coherent ownership, membership, permission, or workspace model and encourage accidental unscoped queries.
 
-### Use one organization model for tenant accounts and client/company entities
+### Use memory subjects as tenant or account records
 
 - Advantage: fewer names and possibly fewer tables at first.
-- Rejected: it mixes an authorization boundary with user content, making permission checks, imports, search, deletion, and future synchronization ambiguous and unsafe.
+- Rejected: it mixes an authorization boundary with personal or professional user content, making permission checks, imports, search, deletion, and future synchronization ambiguous and unsafe. An organization/client represented in memory is one example; the same rule applies to people, relationships, goals, habits, health contexts, and every other memory subject.
 
 ## Consequences
 
 - Migration 0001 will include minimal actor, personal tenant, workspace, workspace-membership, and device foundations.
 - Every relevant repository and service method carries tenant and workspace context even though v1 has one personal tenant and workspace.
 - Tests must prove that a record from one tenant or workspace cannot be read or modified through another tenant/workspace context.
-- The later work-memory schema must use a separate work-entity concept for people, clients/companies, and projects.
+- Every later memory schema must use separate entity/context concepts for personal and professional subjects; none can double as a tenant, account, membership, or authorization principal.
 - Some v1 code is slightly more explicit than a purely single-user application.
 - Future organization features can extend the model without redefining ownership or silently converting personal data into company data.
 - Cloud identity and synchronization remain open designs; the local actor must be mappable without changing existing record IDs.

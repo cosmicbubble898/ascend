@@ -5,6 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+. (Join-Path $PSScriptRoot "python-toolchain.ps1")
+$pythonToolchain = Initialize-AscendPythonToolchain -ProjectRoot $projectRoot
+$uvExecutable = $pythonToolchain.UvExecutable
 
 function Invoke-CheckedCommand {
     param(
@@ -24,15 +27,7 @@ function Invoke-CheckedCommand {
 
 Push-Location -LiteralPath $projectRoot
 try {
-    $uvVersion = & uv --version
-    if ($LASTEXITCODE -ne 0) {
-        throw "Unable to run uv."
-    }
-    if ($uvVersion -notmatch '^uv 0\.11\.29 \(') {
-        throw "Expected uv 0.11.29, found: $uvVersion"
-    }
-
-    $pythonVersion = & uv run --locked python --version
+    $pythonVersion = & $uvExecutable run --locked python --version
     if ($LASTEXITCODE -ne 0) {
         throw "Unable to run the locked Python environment."
     }
@@ -40,11 +35,11 @@ try {
         throw "Expected Python 3.13.14, found: $pythonVersion"
     }
 
-    Invoke-CheckedCommand "Lockfile check" { uv lock --check }
-    Invoke-CheckedCommand "Ruff format check" { uv run --locked ruff format --check . }
-    Invoke-CheckedCommand "Ruff lint" { uv run --locked ruff check . }
-    Invoke-CheckedCommand "mypy" { uv run --locked mypy }
-    Invoke-CheckedCommand "pytest" { uv run --locked pytest }
+    Invoke-CheckedCommand "Lockfile check" { & $uvExecutable lock --check }
+    Invoke-CheckedCommand "Ruff format check" { & $uvExecutable run --locked ruff format --check . }
+    Invoke-CheckedCommand "Ruff lint" { & $uvExecutable run --locked ruff check . }
+    Invoke-CheckedCommand "mypy" { & $uvExecutable run --locked mypy }
+    Invoke-CheckedCommand "pytest" { & $uvExecutable run --locked pytest }
 
     Write-Host "Python quality gate passed."
 }

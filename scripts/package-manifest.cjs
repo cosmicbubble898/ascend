@@ -79,6 +79,23 @@ function compareFileManifests(before, after) {
   return changes;
 }
 
+function compareInstalledFileManifests(expected, actual, allowedExtraPaths) {
+  const expectedPaths = new Set(expected.map((record) => record.path));
+  const allowedExtras = new Set(allowedExtraPaths);
+  const expectedActualRecords = actual.filter((record) =>
+    expectedPaths.has(record.path),
+  );
+  const changes = compareFileManifests(expected, expectedActualRecords);
+
+  for (const record of actual) {
+    if (!expectedPaths.has(record.path) && !allowedExtras.has(record.path)) {
+      changes.push(`unexpected installed file: ${record.path}`);
+    }
+  }
+
+  return changes.sort((left, right) => left.localeCompare(right));
+}
+
 function writeManifest(rootDirectory, outputPath) {
   const records = buildFileManifest(rootDirectory);
   fs.writeFileSync(outputPath, `${JSON.stringify(records, null, 2)}\n`, {
@@ -111,8 +128,19 @@ function runCli(arguments_) {
     }
     return;
   }
+  if (command === "compare-installed" && argumentsList.length >= 2) {
+    const changes = compareInstalledFileManifests(
+      readManifest(argumentsList[0]),
+      readManifest(argumentsList[1]),
+      argumentsList.slice(2),
+    );
+    if (changes.length > 0) {
+      throw new Error(`Installed tree differs:\n${changes.join("\n")}`);
+    }
+    return;
+  }
   throw new Error(
-    "Usage: package-manifest.cjs create <root> <output> | compare <before> <after>",
+    "Usage: package-manifest.cjs create <root> <output> | compare <before> <after> | compare-installed <expected> <actual> [allowed-extra ...]",
   );
 }
 
@@ -128,5 +156,6 @@ if (require.main === module) {
 module.exports = {
   buildFileManifest,
   compareFileManifests,
+  compareInstalledFileManifests,
   runCli,
 };

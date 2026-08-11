@@ -5,7 +5,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
-$nodeRoot = Join-Path $projectRoot ".tools\node-v22.23.1-win-x64"
+. (Join-Path $PSScriptRoot "python-toolchain.ps1")
+$pythonToolchain = Initialize-AscendPythonToolchain -ProjectRoot $projectRoot
+$nodeRoot = Join-Path $projectRoot ".tools\node-v22.23.2-win-x64"
 $nodeExecutable = Join-Path $nodeRoot "node.exe"
 
 function Invoke-CheckedCommand {
@@ -25,7 +27,7 @@ function Invoke-CheckedCommand {
 }
 
 if (-not (Test-Path -LiteralPath $nodeExecutable)) {
-    throw "Local Node 22.23.1 is missing. Run scripts\bootstrap-node.ps1 first."
+    throw "Local Node 22.23.2 is missing. Run scripts\bootstrap-node.ps1 first."
 }
 
 $env:Path = "$nodeRoot;$env:Path"
@@ -33,8 +35,8 @@ $env:Path = "$nodeRoot;$env:Path"
 Push-Location -LiteralPath $projectRoot
 try {
     $nodeVersion = & node --version
-    if ($LASTEXITCODE -ne 0 -or $nodeVersion -ne "v22.23.1") {
-        throw "Expected Node v22.23.1, found: $nodeVersion"
+    if ($LASTEXITCODE -ne 0 -or $nodeVersion -ne "v22.23.2") {
+        throw "Expected Node v22.23.2, found: $nodeVersion"
     }
 
     $npmVersion = & npm --version

@@ -29,5 +29,6 @@ module.exports = {
     warningsAsErrors: true,
     shortcutName: "Ascend",
     artifactName: "Ascend-Setup-${version}-${arch}.${ext}",
+    include: "build/installer.nsh",
   },
 };

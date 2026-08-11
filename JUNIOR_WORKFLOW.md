@@ -49,7 +49,7 @@ Do not write a large batch of tests or implementation before running feedback.
 For identity, permissions, user data, databases, secrets, recordings, file access, integrations, or cloud communication, review:
 
 - Workspace and owner scope
-- Tenant-account versus work-entity meaning
+- Tenant-account versus memory entity/context meaning
 - Authorization below the UI
 - Private-by-default behavior
 - Input validation and path safety

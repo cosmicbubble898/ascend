@@ -7,6 +7,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
+$nodeExecutable = Join-Path $projectRoot ".tools\node-v22.23.2-win-x64\node.exe"
 if ([string]::IsNullOrWhiteSpace($InstallerPath)) {
     $InstallerPath = Join-Path $projectRoot "out\nsis\Ascend-Setup-0.0.0-x64.exe"
 }
@@ -15,6 +16,7 @@ $installRoot = Join-Path $env:LOCALAPPDATA "Programs\Ascend"
 $installedExecutable = Join-Path $installRoot "Ascend.exe"
 $uninstaller = Join-Path $installRoot "Uninstall Ascend.exe"
 $updaterRoot = Join-Path $env:LOCALAPPDATA "ascend-updater"
+$cachedInstaller = Join-Path $updaterRoot "installer.exe"
 $shortcutPath = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Ascend.lnk"
 $desktopShortcut = Join-Path ([Environment]::GetFolderPath("Desktop")) "Ascend.lnk"
 $publicDesktopShortcut = Join-Path $env:PUBLIC "Desktop\Ascend.lnk"
@@ -22,11 +24,14 @@ $proofRoot = Join-Path $projectRoot "runtime\installer-proof"
 $smokeRoot = Join-Path $projectRoot "runtime\installer-smoke"
 $runId = [DateTime]::UtcNow.ToString("yyyyMMddTHHmmssfffZ")
 $runRoot = Join-Path $smokeRoot $runId
-$unicodeSourceRoot = Join-Path $runRoot "source path Ünicode"
+$unicodeDirectoryName = "source path $([char]0x00DC)nicode"
+$unicodeSourceRoot = Join-Path $runRoot $unicodeDirectoryName
 $installerCopy = Join-Path $unicodeSourceRoot "Ascend Setup.exe"
 $resultPath = Join-Path $runRoot "result.json"
+$installedTreeManifest = Join-Path $runRoot "installed-tree.json"
 $syntheticProfileRoot = Join-Path $env:APPDATA "Ascend"
 $syntheticMarker = Join-Path $syntheticProfileRoot "installer-proof-$runId.txt"
+$updaterSentinel = Join-Path $updaterRoot "unexpected-sentinel-$runId.txt"
 $failures = [System.Collections.Generic.List[string]]::new()
 $defenderPlatformRoot = Join-Path $env:ProgramData "Microsoft\Windows Defender\Platform"
 $defenderCommand = $null
@@ -118,12 +123,15 @@ function Get-UninstallEntries {
     }
     @(Get-ChildItem -LiteralPath $root | ForEach-Object {
         $item = Get-ItemProperty -LiteralPath $_.PSPath
-        if ($item.DisplayName -like "Ascend*") {
+        $displayNameProperty = $item.PSObject.Properties["DisplayName"]
+        if ($null -ne $displayNameProperty -and $displayNameProperty.Value -like "Ascend*") {
+            $installLocationProperty = $item.PSObject.Properties["InstallLocation"]
+            $uninstallStringProperty = $item.PSObject.Properties["UninstallString"]
             [PSCustomObject]@{
                 Key = $_.PSChildName
-                DisplayName = $item.DisplayName
-                InstallLocation = $item.InstallLocation
-                UninstallString = $item.UninstallString
+                DisplayName = $displayNameProperty.Value
+                InstallLocation = if ($null -eq $installLocationProperty) { $null } else { $installLocationProperty.Value }
+                UninstallString = if ($null -eq $uninstallStringProperty) { $null } else { $uninstallStringProperty.Value }
             }
         }
     })
@@ -144,26 +152,23 @@ function Assert-NoConflictingInstall {
 }
 
 function Assert-InstalledPayloadMatchesManifest {
-    $latestProof = Get-ChildItem -LiteralPath $proofRoot -Directory |
-        Sort-Object Name -Descending |
-        Select-Object -First 1
-    if ($null -eq $latestProof) {
-        throw "No prepackaged proof manifest is available."
+    param(
+        [Parameter(Mandatory)]
+        [string]$ExpectedManifest
+    )
+
+    & $nodeExecutable .\scripts\package-manifest.cjs create $installRoot $installedTreeManifest
+    if ($LASTEXITCODE -ne 0) {
+        throw "Creating the installed-tree manifest failed."
     }
-    $manifestPath = Join-Path $latestProof.FullName "prepackaged-before.json"
-    $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    foreach ($record in $manifest) {
-        $relativeWindowsPath = $record.path.Replace("/", "\")
-        $installedPath = Join-Path $installRoot $relativeWindowsPath
-        if (-not (Test-Path -LiteralPath $installedPath -PathType Leaf)) {
-            throw "Installed payload is missing: $($record.path)"
-        }
-        $installedHash = (Get-FileHash -LiteralPath $installedPath -Algorithm SHA256).Hash.ToLowerInvariant()
-        if ($installedHash -ne $record.sha256) {
-            throw "Installed payload hash differs: $($record.path)"
-        }
+    & $nodeExecutable .\scripts\package-manifest.cjs compare-installed `
+        $ExpectedManifest `
+        $installedTreeManifest `
+        "Uninstall Ascend.exe"
+    if ($LASTEXITCODE -ne 0) {
+        throw "The complete installed tree differs from the approved payload."
     }
-    return $manifestPath
+    return $installedTreeManifest
 }
 
 function Assert-NoUnapprovedPersistence {
@@ -246,12 +251,30 @@ function Invoke-SilentUninstall {
         throw "The installed uninstaller is missing."
     }
     Invoke-BoundedProcess -FilePath $uninstaller -ArgumentList @("/S")
-    [void](Wait-ForCondition -TimeoutSeconds 60 -Condition { -not (Test-Path -LiteralPath $installRoot) })
+    $cleanupCompleted = Wait-ForCondition -TimeoutSeconds 60 -Condition {
+        -not (Test-Path -LiteralPath $installRoot) -and
+        -not (Test-Path -LiteralPath $shortcutPath) -and
+        @(Get-UninstallEntries).Count -eq 0
+    }
+    if (-not $cleanupCompleted) {
+        throw "Silent uninstall did not finish program, shortcut, and registry cleanup within 60 seconds."
+    }
 }
 
 Assert-NoConflictingInstall
+$matchingProof = (& $nodeExecutable .\scripts\installer-evidence.cjs resolve-proof $proofRoot $installer).Trim()
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($matchingProof)) {
+    throw "The installer is not bound to one matching proof run."
+}
+$manifestPath = Join-Path $matchingProof "prepackaged-before.json"
+
 New-Item -ItemType Directory -Path $unicodeSourceRoot -Force | Out-Null
+$resolvedUnicodeSourceRoot = (Resolve-Path -LiteralPath $unicodeSourceRoot).Path
+if ((Split-Path -Leaf $resolvedUnicodeSourceRoot) -cne $unicodeDirectoryName) {
+    throw "The Unicode smoke directory does not contain the intended U+00DC path."
+}
 Copy-Item -LiteralPath $installer -Destination $installerCopy
+$installerCopy = (Resolve-Path -LiteralPath $installerCopy).Path
 if ((Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath $installerCopy -Algorithm SHA256).Hash) {
     throw "The Unicode-path installer copy differs from the reviewed artifact."
 }
@@ -260,15 +283,20 @@ $result = [ordered]@{
     runId = $runId
     installer = $installer
     installerSha256 = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash
+    proofRun = $matchingProof
     unicodeInstallerCopy = $installerCopy
     currentIntegrity = (whoami /groups | Select-String -Pattern "Mandatory Label\\(High|Medium) Mandatory Level" | ForEach-Object { $_.Line.Trim() })
     installRoot = $installRoot
     packageManifest = $null
+    installedTreeManifest = $null
     shortcutTarget = $null
     shortcutArguments = $null
     sidecarVersion = $null
     syntheticMarkerRetained = $false
     reinstallSucceeded = $false
+    normalUpdaterCleanupSucceeded = $false
+    cachedInstallerRemovedWithSentinel = $false
+    updaterSentinelRetained = $false
     updaterResidue = @()
     defenderStatus = $null
     failures = @()
@@ -287,7 +315,8 @@ try {
     Invoke-DefenderScan -Target (Join-Path $projectRoot "out\Ascend-win32-x64") -EvidenceName "prepackaged"
 
     Invoke-SilentInstall
-    $result.packageManifest = Assert-InstalledPayloadMatchesManifest
+    $result.packageManifest = $manifestPath
+    $result.installedTreeManifest = Assert-InstalledPayloadMatchesManifest -ExpectedManifest $manifestPath
 
     New-Item -ItemType Directory -Path $syntheticProfileRoot -Force | Out-Null
     Set-Content -LiteralPath $syntheticMarker -Value "Synthetic installer proof only: $runId"
@@ -332,12 +361,30 @@ try {
         $result.updaterResidue = @(Get-ChildItem -LiteralPath $updaterRoot -Recurse -File | ForEach-Object { $_.FullName })
         $failures.Add("The installer left executable updater-cache residue: $updaterRoot")
     }
+    else {
+        $result.normalUpdaterCleanupSucceeded = $true
+    }
 
     Invoke-SilentInstall
     $result.reinstallSucceeded = Test-Path -LiteralPath $installedExecutable -PathType Leaf
+    if (-not (Test-Path -LiteralPath $cachedInstaller -PathType Leaf)) {
+        throw "The reinstall did not create the expected cached installer."
+    }
+    Set-Content -LiteralPath $updaterSentinel -Value "Synthetic unexpected cache content: $runId"
     Invoke-SilentUninstall
     if (Test-Path -LiteralPath $installRoot) {
         $failures.Add("The install directory remains after the reinstall/uninstall cycle.")
+    }
+    $result.cachedInstallerRemovedWithSentinel = -not (Test-Path -LiteralPath $cachedInstaller)
+    if (-not $result.cachedInstallerRemovedWithSentinel) {
+        $failures.Add("The exact cached installer remains when the cache contains a sentinel.")
+    }
+    $result.updaterSentinelRetained = Test-Path -LiteralPath $updaterSentinel -PathType Leaf
+    if (-not $result.updaterSentinelRetained) {
+        $failures.Add("The non-recursive uninstall deleted the unexpected sentinel.")
+    }
+    if (-not (Test-Path -LiteralPath $updaterRoot -PathType Container)) {
+        $failures.Add("The uninstall removed the non-empty updater cache directory.")
     }
 }
 catch {
@@ -349,6 +396,15 @@ finally {
     }
     if (Test-Path -LiteralPath $syntheticMarker -PathType Leaf) {
         Remove-Item -LiteralPath $syntheticMarker -Force
+    }
+    if (Test-Path -LiteralPath $updaterSentinel -PathType Leaf) {
+        Remove-Item -LiteralPath $updaterSentinel -Force
+    }
+    if (Test-Path -LiteralPath $updaterRoot -PathType Container) {
+        $remainingUpdaterEntries = @(Get-ChildItem -LiteralPath $updaterRoot -Force)
+        if ($remainingUpdaterEntries.Count -eq 0) {
+            Remove-Item -LiteralPath $updaterRoot
+        }
     }
     $result.failures = @($failures)
     $result | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $resultPath

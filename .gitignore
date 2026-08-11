@@ -12,7 +12,8 @@ secrets/
 .tools/
 node_modules/
 dist/
-build/
+build/*
+!build/installer.nsh
 out/
 .next/
 coverage/
@@ -51,3 +52,18 @@ crash-dumps/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- added by pre-format backup: never commit secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.ppk
+*.key
+id_rsa
+id_ed25519
+credentials.json
+service-account*.json
+node_modules/
+.venv/
+__pycache__/

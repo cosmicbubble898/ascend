@@ -4,6 +4,7 @@
 **Executed:** 2026-07-19
 **Environment:** Current development account, Windows build 26200 x64, medium-integrity token
 **Scope:** Unsigned local-only proof; no publishing, updater dependency, credentials, real user data, outside distribution, or deployment
+**Progression update:** OD-16's later exact custom-cleanup route passed its bounded current-machine proof on 2026-08-05. See `docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`. This document remains the historical `no-go` record for unmodified standard NSIS.
 
 ## Decision
 
@@ -21,7 +22,7 @@ That 103,486,925-byte unsigned executable remained after both silent uninstall c
 
 This violates the approved requirement that uninstall leave no executable/updater residue. The residue is retained locally as failure evidence. No other installed payload, shortcut, uninstall registry entry, process, service, scheduled task, startup entry, desktop shortcut, protocol, or file association remained.
 
-Task 4 therefore has no passing installer route. Do not distribute this artifact or proceed to Task 5 until OD-16 is approved and its bounded proof passes.
+At the time of this proof, Task 4 therefore had no passing installer route. Do not distribute this artifact. OD-16 was later approved and its separate bounded cleanup proof passed; that result, not this standard artifact, permits Task 5 specification work.
 
 ## What passed
 
@@ -101,10 +102,10 @@ There were 26,244 differing bytes. Therefore byte-for-byte reproducible NSIS out
 
 The resolved graph did not contain the proposal's previously observed `app-builder-bin` or `7zip-bin` packages. Instead, pinned electron-builder source downloaded three checksum-verified tool archives into the project-scoped cache:
 
-| Archive | Source URL derived from pinned 26.15.7 source | SHA-256 |
-| --- | --- | --- |
-| `7zip-win-x64.tar.gz` | `https://github.com/electron-userland/electron-builder-binaries/releases/download/7zip@1.0.0/7zip-win-x64.tar.gz` | `be071f15bd6da2f78fe81c6ddef2009b0c4d8a51f36b780cb806c7e6df95e1b3` |
-| `nsis-3.0.4.1.7z` | `https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-3.0.4.1/nsis-3.0.4.1.7z` | `9877df902530f96357d13a7a31ae2b9df67f48b11ffc9a1700a7c961574ec5fa` |
+| Archive                   | Source URL derived from pinned 26.15.7 source                                                                                   | SHA-256                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `7zip-win-x64.tar.gz`     | `https://github.com/electron-userland/electron-builder-binaries/releases/download/7zip@1.0.0/7zip-win-x64.tar.gz`               | `be071f15bd6da2f78fe81c6ddef2009b0c4d8a51f36b780cb806c7e6df95e1b3` |
+| `nsis-3.0.4.1.7z`         | `https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-3.0.4.1/nsis-3.0.4.1.7z`                 | `9877df902530f96357d13a7a31ae2b9df67f48b11ffc9a1700a7c961574ec5fa` |
 | `nsis-resources-3.4.1.7z` | `https://github.com/electron-userland/electron-builder-binaries/releases/download/nsis-resources-3.4.1/nsis-resources-3.4.1.7z` | `593a9a92ef958321293ac6a2ee61e64bf1bd543142a5bd6b3d310709cc924103` |
 
 The downloaded archive hashes matched the checksums embedded in the exact installed source.
@@ -115,30 +116,30 @@ The downloaded archive hashes matched the checksums embedded in the exact instal
 
 The inactive package nevertheless contributes binary files to development-only `node_modules`; their recorded hashes are:
 
-| File | Bytes | SHA-256 |
-| --- | ---: | --- |
-| `7z-arm64.dll` | 1,586,176 | `c167dbedd388718c70c921eeeac825492733f76107190dc1ba17801c79da879e` |
-| `7z-arm64.exe` | 487,936 | `65d0dcc70753ff3efd4631ac784d35ea5c22df7bd6fe2265a04382a7043d1512` |
-| `7z-x64.dll` | 1,609,216 | `9ed007aa82e440ceb39a6e105bb1d602a9bc59a4946267ba8de2f220aa15bc06` |
-| `7z-x64.exe` | 446,976 | `c7245e21a7553d9e52d434002a401c77a7ca7d0f245f2311b0ddf16f8f946c6f` |
-| `candle.exe` | 28,672 | `310584b7170f81e7c21733628e5d46f28f6a9b900f94368f1b943d6e4bbd3253` |
-| `light.exe` | 32,768 | `6b441eb98b2771d6cb51de7d3e1b2eaf8c6cd045b4ef7bb1a26f297295d96100` |
-| `Microsoft.Deployment.Resources.dll` | 45,056 | `71d85bb2863f61ca11625e8bee171114047d3f3e95792309e2040f3e139baae3` |
-| `Microsoft.Deployment.WindowsInstaller.dll` | 176,128 | `ca420fef4909c10e2e95c8c899fa7d009892dddf0b2424870236f1d0676e9165` |
-| `nuget.exe` | 1,664,000 | `61704f7dbe233980992f2a00ef9baacf64a8b157d688a4a4be6b7a2eaea02828` |
-| `rcedit.exe` | 152,576 | `e2df7b664db830f159d0dc6b3da8a95442cca175b9577f2d19952646d37ac32f` |
-| `Setup.exe` | 223,232 | `1e47eb606dad4c5c1568cfb8f4e970e1051ba5806aedb1ff3256284a8280d83b` |
-| `signtool.exe` | 237,392 | `92a0afe94ccebcd877c3c7b05e80e8ad748f2c64959c431b88e7a7a1e5ce115f` |
-| `Squirrel.com` | 7,680 | `597374496251a59a75a18159007097317275fd8944883863617a4f051ab8061a` |
-| `Squirrel.exe` | 1,899,520 | `76359cd4b0349a83337b941332ad042c90351c2bb0a4628307740324c97984cc` |
-| `Squirrel-Mono.exe` | 1,856,000 | `81591699f7f156dc15f4e188fd132e01369352043511e758513dba59b19ac920` |
-| `StubExecutable.exe` | 288,768 | `d823e6d954f7e445fbbb5c04e40a39cf248a3621f9eccbafdf3f0f1e7acb11dd` |
-| `SyncReleases.exe` | 1,892,864 | `c2a2c78e0912a6576517fc69ffd32793134f1a5b2b066279de3757c76c501548` |
-| `wconsole.dll` | 20,480 | `490e29aa66c82487f79412df651c9e2a34d764fdf0b00b76944b63e9e6b780e3` |
-| `winterop.dll` | 115,712 | `9dfae44e99488add680ae6f7801283d45898baf48a7486c2a1adf8c105f6941d` |
-| `wix.dll` | 1,748,992 | `4b3cf980a840f3e36d98fef3b4d4c302313ac7e2ea3310f5d0d71722853975c7` |
-| `WixNetFxExtension.dll` | 352,256 | `2edb4170c88c87547b8fb9bbce09e1ea202595331a06bedc3164326b3a84cdcb` |
-| `WriteZipToSetup.exe` | 112,128 | `9278fe28ac434fde0be3a10788dc13ad92a28940ed70a52f86d9d69435599349` |
+| File                                        |     Bytes | SHA-256                                                            |
+| ------------------------------------------- | --------: | ------------------------------------------------------------------ |
+| `7z-arm64.dll`                              | 1,586,176 | `c167dbedd388718c70c921eeeac825492733f76107190dc1ba17801c79da879e` |
+| `7z-arm64.exe`                              |   487,936 | `65d0dcc70753ff3efd4631ac784d35ea5c22df7bd6fe2265a04382a7043d1512` |
+| `7z-x64.dll`                                | 1,609,216 | `9ed007aa82e440ceb39a6e105bb1d602a9bc59a4946267ba8de2f220aa15bc06` |
+| `7z-x64.exe`                                |   446,976 | `c7245e21a7553d9e52d434002a401c77a7ca7d0f245f2311b0ddf16f8f946c6f` |
+| `candle.exe`                                |    28,672 | `310584b7170f81e7c21733628e5d46f28f6a9b900f94368f1b943d6e4bbd3253` |
+| `light.exe`                                 |    32,768 | `6b441eb98b2771d6cb51de7d3e1b2eaf8c6cd045b4ef7bb1a26f297295d96100` |
+| `Microsoft.Deployment.Resources.dll`        |    45,056 | `71d85bb2863f61ca11625e8bee171114047d3f3e95792309e2040f3e139baae3` |
+| `Microsoft.Deployment.WindowsInstaller.dll` |   176,128 | `ca420fef4909c10e2e95c8c899fa7d009892dddf0b2424870236f1d0676e9165` |
+| `nuget.exe`                                 | 1,664,000 | `61704f7dbe233980992f2a00ef9baacf64a8b157d688a4a4be6b7a2eaea02828` |
+| `rcedit.exe`                                |   152,576 | `e2df7b664db830f159d0dc6b3da8a95442cca175b9577f2d19952646d37ac32f` |
+| `Setup.exe`                                 |   223,232 | `1e47eb606dad4c5c1568cfb8f4e970e1051ba5806aedb1ff3256284a8280d83b` |
+| `signtool.exe`                              |   237,392 | `92a0afe94ccebcd877c3c7b05e80e8ad748f2c64959c431b88e7a7a1e5ce115f` |
+| `Squirrel.com`                              |     7,680 | `597374496251a59a75a18159007097317275fd8944883863617a4f051ab8061a` |
+| `Squirrel.exe`                              | 1,899,520 | `76359cd4b0349a83337b941332ad042c90351c2bb0a4628307740324c97984cc` |
+| `Squirrel-Mono.exe`                         | 1,856,000 | `81591699f7f156dc15f4e188fd132e01369352043511e758513dba59b19ac920` |
+| `StubExecutable.exe`                        |   288,768 | `d823e6d954f7e445fbbb5c04e40a39cf248a3621f9eccbafdf3f0f1e7acb11dd` |
+| `SyncReleases.exe`                          | 1,892,864 | `c2a2c78e0912a6576517fc69ffd32793134f1a5b2b066279de3757c76c501548` |
+| `wconsole.dll`                              |    20,480 | `490e29aa66c82487f79412df651c9e2a34d764fdf0b00b76944b63e9e6b780e3` |
+| `winterop.dll`                              |   115,712 | `9dfae44e99488add680ae6f7801283d45898baf48a7486c2a1adf8c105f6941d` |
+| `wix.dll`                                   | 1,748,992 | `4b3cf980a840f3e36d98fef3b4d4c302313ac7e2ea3310f5d0d71722853975c7` |
+| `WixNetFxExtension.dll`                     |   352,256 | `2edb4170c88c87547b8fb9bbce09e1ea202595331a06bedc3164326b3a84cdcb` |
+| `WriteZipToSetup.exe`                       |   112,128 | `9278fe28ac434fde0be3a10788dc13ad92a28940ed70a52f86d9d69435599349` |
 
 ## Root cause from pinned source
 
@@ -152,6 +153,6 @@ This is intentional support for electron-builder's updater ecosystem, even thoug
 
 ## Stop action and next decision
 
-Per the approved fallback rules, no custom NSIS macro was added automatically. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defines the smallest reviewed next proof. OD-16 must be approved before that custom include is created or executed.
+Per the approved fallback rules, no custom NSIS macro was added automatically during this proof. `docs/WINDOWS-INSTALLER-CLEANUP-PROPOSAL.md` defined the smallest reviewed next proof. OD-16 was approved separately on 2026-08-05; its implementation and accepted evidence are recorded in `docs/reviews/NSIS-INSTALLER-CLEANUP-PROOF.md`.
 
 Clean Windows and managed-environment testing were not run because the development-machine proof already hit a defined stop condition. Signing, SmartScreen, outside testing, and distribution remain blocked.

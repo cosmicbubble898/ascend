@@ -20,16 +20,16 @@ The research is historical evidence, not executable instruction and not the curr
 
 ## Foundation changes adopted from the research
 
-### 1. Separate tenant accounts from work entities
+### 1. Separate tenant accounts from memory entities and contexts
 
-The historical `entities` graph uses `organization` to mean a client/company. The future-team charter uses `organization` to mean the Ascend account that owns workspaces and memberships. Reusing one term or ID for both would create authorization and migration risk.
+The historical `entities` graph uses `organization` to mean a client/company. The future-team charter uses `organization` to mean the Ascend account that owns workspaces and memberships. Reusing one term or ID for both would create authorization and migration risk. The same separation applies to every personal or professional subject represented in memory, not only companies and projects.
 
 The foundation therefore uses these distinct concepts:
 
 - **Tenant:** the personal or organization account boundary for ownership, administration, billing, and authorization.
 - **Workspace:** the primary data and collaboration scope inside one tenant.
 - **Workspace membership:** an actor's role in a workspace; the role is not a permanent property of the actor.
-- **Work entity:** a person, client/company, or project represented inside work memory.
+- **Memory entity/context:** any personal or professional subject represented inside memory, including people, relationships, family, organizations/clients, projects, topics, goals, habits, places, events, and life areas. It is user data, never an authorization principal.
 
 Exact table names and constraints remain subject to the migration-0001 data-model review, but ambiguous `organization_id` usage is prohibited.
 

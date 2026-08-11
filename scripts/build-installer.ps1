@@ -5,7 +5,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path
-$nodeRoot = Join-Path $projectRoot ".tools\node-v22.23.1-win-x64"
+$nodeRoot = Join-Path $projectRoot ".tools\node-v22.23.2-win-x64"
 $nodeExecutable = Join-Path $nodeRoot "node.exe"
 $builderExecutable = Join-Path $projectRoot "node_modules\.bin\electron-builder.cmd"
 $forgePackage = Join-Path $projectRoot "out\Ascend-win32-x64"
@@ -39,7 +39,7 @@ function Assert-ExpectedProjectPath {
 }
 
 if (-not (Test-Path -LiteralPath $nodeExecutable -PathType Leaf)) {
-    throw "Local Node 22.23.1 is missing. Run scripts\bootstrap-node.ps1 first."
+    throw "Local Node 22.23.2 is missing. Run scripts\bootstrap-node.ps1 first."
 }
 if (-not (Test-Path -LiteralPath $builderExecutable -PathType Leaf)) {
     throw "The approved electron-builder dependency is not installed. Run npm ci --ignore-scripts."
@@ -54,6 +54,11 @@ $env:ELECTRON_BUILDER_CACHE = $cacheRoot
 
 Push-Location -LiteralPath $projectRoot
 try {
+    & $nodeExecutable .\scripts\installer-policy.cjs repository $projectRoot
+    if ($LASTEXITCODE -ne 0) {
+        throw "Installer repository policy failed with exit code $LASTEXITCODE."
+    }
+
     & npm run package
     if ($LASTEXITCODE -ne 0) {
         throw "Forge package build failed with exit code $LASTEXITCODE."
