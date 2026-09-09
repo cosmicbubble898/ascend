@@ -30,11 +30,22 @@ Primary implementation areas are `shell/main`, `shell/renderer`, `src/ascend_eng
 
 ## Git and environment
 
-- Branch: `backup/pre-format-2026-08-11`.
+- Branch: `main`.
 - Base before closeout: `2a28537`.
-- Commit: this document is included in the coherent closeout commit.
-- Push targets: public `origin` (`cosmicbubble898/ascend`) and private `privbak` (`cosmicbubble898/ascend-backup`) on the same non-default branch.
+- Coherent prototype checkpoint: `9a1a26e`.
+- Push targets: public `origin` (`cosmicbubble898/ascend`) and private `privbak` (`cosmicbubble898/ascend-backup`). Both default `main` branches contain the checkpoint.
 - Target environment: current local Windows development machine. The packaged app is an unsigned development package and is not a public production release.
+
+## Machine-local continuity
+
+A future software-session-start should verify the presence of these paths without printing or decrypting their contents:
+
+- Activity history and derived screenshot-analysis evidence: `C:\Users\samar\AppData\Local\Ascend\Productivity\activity.vault`.
+- DPAPI-protected vision credential: `C:\Users\samar\AppData\Local\Ascend\Productivity\anthropic.key`.
+- DPAPI-protected activity-analysis credential: `C:\Users\samar\AppData\Local\Ascend\Productivity\anthropic-analysis.key`.
+- Encrypted clipboard history: `C:\Users\samar\AppData\Roaming\Ascend\clipboard\history.bin`.
+
+Raw screenshots are deliberately deleted after successful vision analysis and evidence commit. Their derived observations and deletion receipts remain in `activity.vault`; session start should not expect a permanent raw-screenshot folder. These files are machine-local and Git-ignored, so GitHub source recovery does not restore personal activity history or credentials to another Windows installation.
 
 ## Remaining work and exact next step
 
