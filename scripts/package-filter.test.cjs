@@ -7,6 +7,26 @@ const { shouldIgnoreFromPackage } = require("./package-filter.cjs");
 const { ELECTRON_FUSE_POLICY } = require("./electron-fuse-policy.cjs");
 
 test("package filter accepts relative and rooted build paths", () => {
+  for (const file of [
+    "dist/shell/main/transcription-session.js",
+    "dist/shell/main/login-startup.js",
+    "dist/shell/main/background-tray.js",
+    "dist/shell/main/clipboard-history.js",
+    "dist/shell/main/transcription-state.js",
+    "dist/shell/main/transcription-files.js",
+    "dist/shell/main/worker-retirement.js",
+    "dist/shell/main/productivity-session.js",
+    "dist/shell/main/productivity-command.js",
+    "dist/shell/main/productivity-extra-command.js",
+    "dist/shell/productivity-contract.js",
+    "dist/shell/clipboard-contract.js",
+    "dist/shell/window-contract.js",
+    "dist/shell/renderer",
+    "dist/shell/renderer/app.js",
+    "dist/shell/renderer/clipboard.js",
+    "dist/shell/renderer/productivity.js",
+  ])
+    assert.equal(shouldIgnoreFromPackage(file), false, file);
   assert.equal(shouldIgnoreFromPackage("dist/shell/main/main.js"), false);
   assert.equal(shouldIgnoreFromPackage("/dist/shell/main/main.js"), false);
   assert.equal(shouldIgnoreFromPackage("dist/shell/main/"), false);
@@ -77,5 +97,6 @@ test("the known-bad Squirrel route is not active", () => {
   assert.deepEqual(forgeConfig.makers, []);
   assert.deepEqual(forgeConfig.packagerConfig.extraResource, [
     path.join(projectRoot, "build", "engine", "ascend-engine"),
+    path.join(projectRoot, "build", "ascend-runtime"),
   ]);
 });

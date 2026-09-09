@@ -37,7 +37,7 @@ Exact table names and constraints remain subject to the migration-0001 data-mode
 
 The blueprint audit identifies meeting capture and Windows installer/antivirus behavior as the two earliest hardware-truth risks. After the basic skeleton exists, the plan now performs an early installer/AV spike. After Milestone 0, work proceeds to a throwaway meeting-capture spike, then a throwaway screen-context spike, before production feature implementation.
 
-The meeting spike must cover Meet, Zoom, and Teams; headphones, speakers, Bluetooth, silence, and device switching; live track meters; honest degradation; and echo cancellation for speaker use. Spike code is evidence, not production code, unless separately reviewed and rebuilt under the normal TDD process.
+The meeting spike must cover Meet, Zoom, and Teams; headphones, speakers, Bluetooth, silence, and device switching; live track meters; honest degradation; and echo cancellation for speaker use. Spike code is evidence, not production code, unless separately reviewed and rebuilt under the normal implementation and verification process.
 
 ### 3. Make anti-surveillance a product invariant
 

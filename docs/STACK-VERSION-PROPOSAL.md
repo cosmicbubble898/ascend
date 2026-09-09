@@ -131,7 +131,7 @@ This prevents an untested encryption choice from becoming the permanent storage 
 
 - Check Electron support/security status before every release because supported majors move quickly.
 - Review dependency updates at least monthly and immediately for relevant security advisories.
-- Upgrade one logical group at a time, regenerate the relevant lockfile, run the full gate, package, and smoke-test Windows behavior.
+- Group upgrades appropriately, regenerate the relevant lockfile, and verify affected packaging and Windows behavior.
 - Revisit Node 24 only after the Forge packaging issue is fixed and a local packaging smoke passes.
 - Revisit TypeScript 7 at 7.1 or later when typescript-eslint and any compiler-API consumers officially support the same route.
 
@@ -219,7 +219,7 @@ Packaging is a separate early spike because success on a development machine is 
 
 ## Approval record
 
-The founder approved this proposal on 2026-07-18 and authorized Task 2 only: create the Python package and its quality skeleton with the approved versions needed by that task. Task 2 must still be test-driven and verified. This does not authorize Task 3 automatically, provider work, sensitive data, cloud resources, credentials, signing spend, or deployment.
+The founder approved this proposal on 2026-07-18 and authorized Task 2 only: create the Python package and its quality skeleton with the approved versions needed by that task. Task 2 must still be verified with relevant checks. This does not authorize Task 3 automatically, provider work, sensitive data, cloud resources, credentials, signing spend, or deployment.
 
 Recorded approval text:
 

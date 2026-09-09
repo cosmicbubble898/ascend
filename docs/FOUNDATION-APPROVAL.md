@@ -10,7 +10,7 @@ The founder approved the product foundation, organization-ready seams, proposed 
 
 The approved NSIS work authorizes only exact `electron-builder@26.15.7` as a development wrapper around the existing prepackaged Forge output. It does not authorize provider apps, callback domains, connection-service/cloud resources, real credentials, real-data capture, signing spend, installer publishing, an updater, outside testing, or production changes.
 
-On 2026-07-18, after Task 2 completed, the founder authorized continued execution of the existing written task sequence while away. This authorizes moving through those tasks one verified task at a time. It does not supply a missing open-decision value, authorize purchases, real credentials, real user data, destructive database work, provider/cloud resource creation, deployment, or production changes. Those named gates remain in force.
+On 2026-07-18, after Task 2 completed, the founder authorized continued execution of the existing written task sequence while away. This authorizes continued work through those tasks with appropriate verification. It does not supply a missing open-decision value, authorize purchases, real credentials, real user data, destructive database work, provider/cloud resource creation, deployment, or production changes. Those named gates remain in force.
 
 ## Recommended foundation
 
@@ -50,7 +50,7 @@ Exact dependencies and versions will be researched from current official sources
 
 ### D. Quality and security process
 
-Approve specification-first work, small tasks, behavioral TDD, current official-source dependency review, required checks before completion, security review for sensitive features, and no code before an approved spec/task.
+Approve specification-first work, small tasks, behavioral verification, current official-source dependency review, required checks before completion, security review for sensitive features, and no code before an approved spec/task.
 
 Approve `docs/THREAT-MODEL.md` as the baseline that future features must refine with abuse cases and tests.
 
@@ -70,7 +70,7 @@ Approve this order after the foundation and later per-task gates:
 8. Personal work integrations under the separately approved integration plan
 9. Other separately specified production feature milestones
 
-Spike code is not production code and cannot bypass TDD, quality review, or security review.
+Spike code is not production code and cannot bypass behavioral verification, quality review, or security review.
 
 **Recommendation:** Approve.
 

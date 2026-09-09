@@ -318,7 +318,7 @@ Every matrix run records OS build, hardware/driver identifiers appropriate for l
 8. **Permission/device UX slice:** Implement the Capability Center, microphone selection, settings links, and truthful failure states.
 9. **Hardware proof:** Execute the approved physical-device matrix before production feature code depends on the baseline.
 
-Each production slice follows behavioral TDD, focused Windows runtime verification, the full quality gate, and code-quality/security review. New dependencies, a native build toolchain, actual microphone capture, real user data, signing spend, or distribution retain their existing approval gates.
+Each production slice follows behavioral verification, focused Windows runtime verification, the full quality gate, and code-quality/security review. New dependencies, a native build toolchain, actual microphone capture, real user data, signing spend, or distribution retain their existing approval gates.
 
 ## Donor evidence and disposition
 

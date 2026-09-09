@@ -1,7 +1,35 @@
 # Specification: Ascend Version 1
 
-**Status:** Foundation architecture and stack proposal approved; OD-17 hardware behavior approved; OD-18 future-capability and OD-19 Agent OS extensions proposed; Tasks 2–4A complete locally; release gates remain open
-**Last updated:** 2026-08-10
+**Status:** Foundation architecture and stack proposal approved; OD-17 hardware behavior approved; OD-18 future-capability and OD-19 Agent OS extensions proposed; Tasks 2–6 complete locally; OD-21 and release gates remain open
+**Last updated:** 2026-09-07
+
+### Automatic startup and background tracking — authorized 2026-09-07
+
+The founder requested always-running personal tracking with Windows startup and 4/24/48-hour pauses. `BACKGROUND-TRACKING-SPEC.md` supersedes close-to-exit and manual-launch behavior: register current-user sign-in startup, launch quietly in the tray, hide on window close, preserve timed pauses and supervise capture independently of the renderer. Windows sign-out/shutdown and disabled startup entries remain respected. This does not add a Windows service, cloud processing or new capture permissions.
+
+### Audit repairs — authorized 2026-09-06
+
+The owner's “fix” authorizes repairing the six confirmed defects in ASCEND-AUDIT-2026-09-06.md. Serialize transcription starts behind confirmed worker teardown, preserve local-only processing and partial export, and verify repeated cancellation/restart. Retry tracking must recover the service. Date changes must clear stale task edits; task names must be searchable; day-deletion confirmation must name plans. Packaging must include the complete feature payload and use relocatable runtime paths, with a local packaged smoke test. Preserve current data, pinned dependencies, and public-release gates. Transcript-library and tray additions remain separate feature work.
+
+### Current implementation — expanded personal productivity
+
+The founder requested implementation of all seven proposed productivity additions on 2026-09-06. PRODUCTIVITY-EXPANSION-SPEC.md defines automatic tracking, persistent timed pauses/reminders, explainable context classification with optional local AI review, daily task/project planning, focus/break tools, daily and weekly reports, recurring-habit evidence, and automation candidates. Migration 0003 adds scoped plans and activity context without modifying existing migrations. User history stays encrypted and local. This request supersedes the earlier start-paused behavior; it does not add team administration, cloud inference, OCR, or external actions.
+
+### First implementation slice — basic personal productivity, 2026-09-05
+
+The founder requested basic productivity before dictation and reaffirmed Windows API/accessibility metadata as the first information source. `docs/BASIC-PRODUCTIVITY-SPEC.md` defines the implemented local slice: opt-in app tracking, idle/desktop checks, optional window titles with accessibility checks, daily summaries, editable categories/project context, exclusions, and encrypted automatic activity history. Migration 0002 extends the existing foundation; the engine owns a scoped in-memory SQLite connection and persists only current-user DPAPI-encrypted snapshots in a dedicated local productivity vault. It does not create a plaintext activity database or implement the older separate installation.json proposal. Its exact behavior takes precedence over older foundation sequencing for this requested slice. The broader personal vision and later team platform remain intact; OCR, richer context, and agent features remain planned.
+
+### First usable feature — requested 2026-09-05
+
+The founder approved local English Parakeet transcription as the first usable feature on 2026-09-05. The implemented stateless feature provides local decoding/inference, progress/cancel and deliberate text export. The pinned runtime is installed, and Windows AppContainer denies worker networking and unrelated file access. The narrow OD-03 exception permits owner-selected recordings after the proof recorded in `docs/reviews/LOCAL-TRANSCRIPTION-2026-09-05.md`. Persistent histories and Task 7 remain separately gated.
+
+The 2026-09-05 Telegram-folder selection fix adds MP4 recordings to the existing local chooser and decoder path. Video tracks are ignored and the existing privacy and audio limits apply; acceptance is recorded in the local transcription specification.
+
+The owner requested sentence-aligned paragraphs around 30 seconds on 2026-09-05. The local worker uses existing word timing and punctuation to insert blank lines without rewriting words or calling an LLM. Display and TXT export share the same formatting. The concrete behavior and limits are in `docs/LOCAL-PARAKEET-TRANSCRIPTION-SPEC.md`.
+
+### Connections clarification — 2026-09-05
+
+The founder reaffirmed MCP-first integration through one reusable connection layer and existing official provider servers, minimizing custom provider code. `docs/CONNECTIONS-EXPERIENCE-PROPOSAL.md` is withdrawn and historical; its API-first/CX sequence is not an implementation plan. ADR-0003 remains authoritative. Supported provider actions are part of the intended product direction; the existing read-only implementation boundary remains until an exact action authorization/confirmation contract is approved.
 
 ## Approved foundation and remaining gates
 
@@ -24,7 +52,7 @@ Items 1, 2, 5, 6, 7, 8, 9, and 12 are approved product/architecture directions. 
 
 The 2026-08-05 foundation audit found stale security-pinned runtimes, installer-policy and evidence-binding gaps, a broken default project-local Python-toolchain route, and privacy/documentation overclaims. The exact local-only remediation passed on 2026-08-10; current evidence is in `docs/reviews/AUDIT-REMEDIATION-2026-08-10.md`.
 
-The exact approved scope, dependency versions, TDD order, acceptance criteria, and stop conditions are in `docs/AUDIT-REMEDIATION-PROPOSAL.md`. Completion does not broaden any product, data, release, signing, publishing, provider, model, screenshot, agent, or Task 6 gate.
+The exact approved scope, dependency versions, verification order, acceptance criteria, and stop conditions are in `docs/AUDIT-REMEDIATION-PROPOSAL.md`. Completion does not broaden any product, data, release, signing, publishing, provider, model, screenshot, agent, or Task 6 gate.
 
 ## Objective
 
@@ -191,7 +219,7 @@ The first schema must support, at minimum, stable identifiers for a local actor,
 
 Membership roles are not hard-coded into the person. Permission evaluation must be separable from UI rendering. Important operations must record actor, device/client, tenant, workspace, source, and UTC time. Data ownership must distinguish personal, explicitly shared, workspace-owned, and organization-owned content.
 
-Conceptual terminology is mandatory. The exact migration-0001 proposal is now in `docs/DATA-MODEL.md` and remains subject to founder approval before implementation:
+Conceptual terminology is mandatory. The exact migration-0001 specification in `docs/DATA-MODEL.md` was approved on 2026-09-05. Task 6 is implemented and verified with synthetic data; first-run bootstrap still requires OD-21:
 
 - **Tenant:** the personal or organization account boundary used for ownership, administration, billing, and authorization.
 - **Workspace:** the primary data scope owned by one tenant.
@@ -200,7 +228,7 @@ Conceptual terminology is mandatory. The exact migration-0001 proposal is now in
 
 An ambiguous `organization` model or `organization_id` field must not represent both a tenant account and an organization/client represented in memory. The same type and ID separation applies to every other memory entity/context.
 
-Exact tables, constraints, and future cloud identity mapping require a separately reviewed data-model specification before migration 0001 is implemented.
+Migration 0001 matches the approved tables and constraints. Further schema or cloud-identity changes require their own reviewed specification.
 
 ## Proposed technical architecture
 
@@ -288,7 +316,7 @@ reference/          Explicitly approved, secret-scanned donor excerpts only
 
 ## Testing strategy
 
-- Production behavior follows test-driven development.
+- Verify production behavior with appropriate behavioral tests and relevant checks.
 - Python uses pytest for domain behavior, migrations, data-access scope, engine API, and pipeline integration.
 - TypeScript uses Vitest for supervisor, identity, IPC, and UI state behavior.
 - Permission and tenant/workspace-isolation tests are required even when only one local tenant and workspace exist.

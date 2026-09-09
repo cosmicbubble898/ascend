@@ -36,12 +36,12 @@ test("synthetic migration work is not incorrectly blocked on encryption", () => 
 });
 
 test("identity terminology and Task 8 actor requirements are unambiguous", () => {
-  const workflow = readProjectFile("JUNIOR_WORKFLOW.md");
+  const instructions = readProjectFile("AGENTS.md");
   const todo = readProjectFile("tasks/todo.md");
 
-  assert.doesNotMatch(workflow, /work-entity/);
+  assert.doesNotMatch(instructions, /work-entity/);
   assert.doesNotMatch(todo, /work-entity/);
-  assert.match(workflow, /memory entity\/context/);
+  assert.match(instructions, /memory entities\/contexts/);
   assert.doesNotMatch(todo, /actor\/client, tenant/);
   assert.match(todo, /acting actor, tenant, and workspace context/);
   assert.match(

@@ -1,0 +1,17 @@
+# Personal productivity expansion — 2026-09-06
+
+The owner requested all seven features in the preceding product plan. This is implementation authorization for automatic tracking, timed pauses/reminders, contextual categorization, projects/tasks, reviews, coaching, focus tools, and automation suggestions. Preserve existing encrypted history and transcription. No team administration or billing.
+
+- Capture begins when Ascend opens unless a saved pause deadline is still in the future. Settings offer 1, 4, 24, or 48 hours; no indefinite pause. Resume is available immediately. Deadlines survive restart and expire across sleep. Show a persistent countdown and an OS reminder every 30 minutes while the app is running. Closing still exits; no Windows-login registration is implied.
+- Category precedence is manual correction, remembered context rule, app rule, known context match, known app, Uncategorized. Show the reason. Window titles remain optional. Browser context comes from titles, not cookies, history, document bodies, or URL scraping.
+- Add a daily plan with tasks, project labels, target minutes, completion, edit/delete, and focus on a task. Record planned/unplanned/unspecified context without guessing it from an app alone. Corrections and explicit context rules can assign project/task context.
+- Daily and seven-day reviews show observed active time, categories, projects, planned/unplanned/unspecified time, daily trends, and comparison with the preceding equivalent period. Missing days stay missing; comparisons do not imply complete coverage.
+- Coaching uses transparent thresholds and activity evidence, with one suggested experiment. Repeated app sequences can suggest an automation opportunity; these are candidates, not proof of repeated task content and never execute actions.
+- Daily sustained-work goals and 15–120 minute focus sessions, a five-minute break, cancel controls, and optional break reminders. Timer completion is elapsed wall time, not proof of focused work. Persist timer state and notify once per completion.
+- Optional AI classification is an explicit review action for selected metadata using an already installed local Ollama model. Do not install a model, reuse credentials, call a cloud model, or classify continuously. Validate outputs, show provenance, and require Apply before changing a category. The local server receives only the previewed app/title. Keep capture responsive while inference runs; bound requests, responses, and time. Refuse models advertised as remote.
+
+All persistent data uses the existing scoped, current-user encrypted vault. Additive migration 0003 stores task plans and per-segment context. Existing migrations are immutable. Settings remain bounded. Never touch the live vault from QA; use isolated synthetic profiles and verify an upgrade from version 2.
+
+Checks: deadline/restart/resume, foreground gaps, notification deduplication, classification precedence and misleading input, scoped plans/context, reporting denominators, workflow thresholds, focus timing, malformed/remote AI refusal, real Electron workflows, existing transcription access, and full quality gate. OS notification delivery and optional live inference require a suitable desktop/model and must be reported separately from mocked contract checks.
+
+Primary API references checked: [Electron notifications](https://www.electronjs.org/docs/latest/api/notification), [Ollama chat](https://docs.ollama.com/api/chat). No new dependency is required.

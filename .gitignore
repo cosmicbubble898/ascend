@@ -38,6 +38,7 @@ downloads/
 models/
 logs/
 crash-dumps/
+artifacts/
 *.pid
 *.dmp
 *.db

@@ -56,7 +56,11 @@ module.exports = {
   packagerConfig: {
     asar: true,
     executableName: "Ascend",
-    extraResource: [path.join(__dirname, "build", "engine", "ascend-engine")],
+    icon: path.join(__dirname, "shell", "renderer", "ascend-app-icon.ico"),
+    extraResource: [
+      path.join(__dirname, "build", "engine", "ascend-engine"),
+      path.join(__dirname, "build", "ascend-runtime"),
+    ],
     ignore: shouldIgnoreFromPackage,
     overwrite: true,
     prune: true,

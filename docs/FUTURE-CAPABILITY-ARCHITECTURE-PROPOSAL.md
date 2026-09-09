@@ -517,8 +517,8 @@ Before any local model or future module implementation is accepted:
 3. In migration-0001 and the core DAL, preserve tenant/workspace/owner/audit foundations only; do not pre-build model, bot, speaker-profile, or health tables.
 4. Before the first production transcription/AI slice, specify the exact capability contract and execution receipt with fake local/cloud adapters.
 5. Select one concrete runtime only after current official-source, license, dependency, packaging, security, and Windows hardware research.
-6. Implement one vertical slice with TDD, fault injection, resource limits, and an approved hardware matrix.
-7. Add later adapters one at a time through the same conformance suite.
+6. Implement one vertical slice with behavioral verification, fault injection, resource limits, and an approved hardware matrix.
+7. Validate later adapters through the same conformance suite.
 8. Specify cloud bot, speaker identity, and health/wellness as separate high-risk product milestones with their own human approvals.
 9. Specify retained screenshots and local vision as a separate high-risk visual-context milestone after the baseline screen-context spike, encrypted storage, OD-20 controls, and an approved model/runtime proof.
 

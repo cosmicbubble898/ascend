@@ -1,9 +1,13 @@
 # Ascend Project Charter
 
 **Status:** Active
-**Last updated:** 2026-08-05
+**Last updated:** 2026-09-05
 
 ## Product vision
+
+### Founder priorities — 2026-09-05
+
+Productivity improvement and understanding personal work habits are the highest priority. The other two core pillars are working across applications (including app-wide dictation and reusable MCP connections) and dependable meeting notes. Build the shared foundations toward these three outcomes before expanding into future platform features. No blanket control of unsupported applications is promised.
 
 Ascend is a Windows-first personal development system whose first product wedge helps people work faster, understand how they work, and build a useful memory of their work. Its initial experience combines dictation, bot-free meeting notes, productivity tracking, assigned tasks and meetings from connected work tools, a searchable work memory, and controlled connections to tools such as ChatGPT and Claude.
 

@@ -1,6 +1,81 @@
 # Ascend Task Checklist
 
-Only one task may be in progress at a time. The architecture, stack proposal, OD-17 Windows hardware behavior, and OD-20 future local screenshot-context direction are approved; OD-18 future-capability and OD-19 Agent OS architectures are proposed. Tasks 2–4A are complete locally. Task 4's exact OD-16 custom-cleanup NSIS route is `go-local`; clean-machine and release qualification remain open. Task 5 specification work may begin, but migration implementation still requires approval of the exact data-model specification, and OD-21 blocks Task 7. OD-03 selected synthetic-only plain storage. Retained signing, encryption-before-real-data, screenshot/vision, credential, provider, runtime/model, agent/skill, and production gates apply at their named blocking points.
+## Current feature — automatic startup and background tracking, 2026-09-07
+
+- [x] Current-user Windows sign-in registration, verified native command and visible startup status.
+- [x] Quiet login, resident tray, close-to-hide, manual reopening and orderly process-exit cleanup.
+- [x] Settings pauses of 4/24/48 hours, persisted deadlines and automatic resumption.
+- [x] Renderer-independent heartbeat/reminders and worker recovery that preserves pauses.
+- [x] Native hidden-window/recovery/expiry tests, hardened package smoke and quality checks.
+
+Scope: `docs/BACKGROUND-TRACKING-SPEC.md`. Evidence and limits: `docs/reviews/BACKGROUND-TRACKING-2026-09-07.md`.
+
+## Current feature — productivity expansion, 2026-09-06
+
+Specification: docs/PRODUCTIVITY-EXPANSION-SPEC.md. Review: docs/reviews/PRODUCTIVITY-EXPANSION-2026-09-06.md.
+
+- [x] Automatic tracking on launch; 1/4/24/48-hour pause deadlines survive restart and resume automatically.
+- [x] Persistent countdown, periodic pause reminders, and visible native-notification delivery status.
+- [x] Explainable app/title categories, manual corrections, context rules, and optional local AI suggestion/apply.
+- [x] Daily task/project planning, edit/completion/delete, and planned/unplanned/unspecified context.
+- [x] Focus and break timers, task association, daily sustained-work goals, and break reminders.
+- [x] Daily and seven-day reviews with previous-period figures, category/project time, and coverage disclosure.
+- [x] Recurring patterns require at least three observed days; coaching gives a concrete experiment.
+- [x] Repeated app sequences yield reviewable automation candidates with concrete suggestions.
+- [x] Encrypted v2-to-v3 history/identity preservation, scope and boundary tests, isolated desktop QA, and quality checks.
+- [ ] Configure an installed local model and evaluate real classification quality; the optional adapter and review flow are verified with synthetic responses.
+- [x] Serialize transcription worker retirement before restart; real two-hour completion, cancellation, restart and partial preservation passed. Broader hardware stress testing remains appropriate.
+
+Audit update: `docs/reviews/ASCEND-AUDIT-2026-09-06.md` reproduces restart failure with `gpu_unavailable` after a successful two-hour run. The first implementation is not fully reliable.
+
+- [x] Repair Retry tracking after an engine crash; direct recovery verified.
+- [x] Prevent task editing from silently targeting the original day after date navigation.
+- [x] Disclose daily-plan deletion in the activity-deletion confirmation.
+- [x] Include task labels in timeline search.
+- [x] Update the packaging allowlist and relocatable runtime launch contract for both implemented features. Public distribution remains gated.
+
+Repair evidence and limits: `docs/reviews/AUDIT-FIXES-2026-09-06.md`.
+
+## Current feature — basic personal productivity
+
+**Specification:** `docs/BASIC-PRODUCTIVITY-SPEC.md`. Requested on 2026-09-05, before dictation.
+
+- [x] Build current-user encrypted activity storage using the existing scoped foundation and migration 0002.
+- [x] Capture foreground app/monitor and input-idle metadata with Win32; use optional UI Automation checks for window context, without screenshots or OCR.
+- [x] Add daily totals, sustained work estimates, an hourly chart, app breakdowns, and basic pattern observations.
+- [x] Add timeline category/project corrections, undo, and app category rules.
+- [x] Add explicit start/pause, app exclusions, optional titles, automatic checkpoints, 30-day retention, and day deletion.
+- [x] Verify encrypted restart, corruption and writer conflicts, timing/gaps, corrections, and an isolated real Electron flow.
+- [ ] Complete live active-window capture across monitors and lock/sleep recovery in an active desktop session. Automated UI checks pass; the final native monitor assertion remains failing because Windows returned no foreground window. Evidence: `docs/reviews/BASIC-PRODUCTIVITY-2026-09-05.md`.
+- [ ] Extend URL-level context, optional OCR, deeper coaching, and the in-product agent in subsequent slices.
+- [ ] Add the separately requested automatic transcript library; current file-transcription export remains manual.
+
+These personal features preserve Ascend's later team-platform direction and the earlier product documents.
+
+## Current feature — local English Parakeet transcription
+
+**Specification:** `docs/LOCAL-PARAKEET-TRANSCRIPTION-SPEC.md`.
+**Status:** Approved and implemented locally on 2026-09-05. Evidence: `docs/reviews/LOCAL-TRANSCRIPTION-2026-09-05.md`.
+
+- [x] Sentence-aligned paragraphs: existing timestamps and punctuation create paragraphs around 30 seconds, with words and partial output preserved. Full quality gate and two-hour GPU/UI/export proof pass. The owner's test export has 38 paragraphs and all 2,757 original words, with an unchanged original file. No new dependency or cloud call.
+- [x] MP4 picker correction: reproduced rejection, enabled local MP4 selection, verified video-plus-audio decoding and video-only rejection, public GPU/UI transcription/export, and quality/security checks. Seven worker decoder tests and the complete quality gate pass. The current owner session was preserved; close/reopen loads the updated chooser.
+- [x] Prepare the concrete behavior/privacy contract, source review, 14-package hashed dependency proposal, and pinned model manifest.
+- [x] P1: Locked runtime and six verified model assets; real CUDA with fallback disabled; public speech inside AppContainer; native outbound denial.
+- [x] P2: Streaming decode, inclusive 7,200-second/sample limits, timestamp stitching, corrupt/format/repetition tests, cancellation and typed failures.
+- [x] P3: Native chooser/export, validated IPC/senders, progress, selectable text, cancel/clear, source overwrite protection and parent-death supervision.
+- [x] P4: Two-hour GPU and Electron tests; one-sample-over rejection; native privacy probes; no observed TCP endpoints or worker-profile content files; code/security review and quality gates. Native tracing limits are explicit in the review.
+
+The single feature approval covers P1–P4 and the explicitly stated runtime downloads and session-only OD-03 exception. This sequence takes precedence over the older foundation order for the requested first feature. Persistent account/data work remains behind its own existing gates.
+
+## Connections direction corrected — 2026-09-05
+
+- [x] Record the founder's MCP-first, minimal-custom-code direction.
+- [x] Withdraw `docs/CONNECTIONS-EXPERIENCE-PROPOSAL.md` and its CX sequence; close OD-22 without adding an approval gate.
+- [ ] Specify supported provider actions before expanding the current read-only implementation boundary.
+
+Retain the foundation tasks below, with the current first-feature priority above taking precedence. Do not implement the withdrawn connections proposal.
+
+The architecture, stack proposal, OD-17 Windows hardware behavior, and OD-20 future local screenshot-context direction are approved; OD-18 future-capability and OD-19 Agent OS architectures are proposed. Tasks 2–4A are complete locally. Task 4's exact OD-16 custom-cleanup NSIS route is `go-local`; clean-machine and release qualification remain open. Tasks 5 and 6 are complete locally; OD-21 still blocks Task 7. The current transcription proposal is a separate stateless feature approval. Owner-authorized personal activity intelligence through the correctable timeline is implemented as a local pilot under `docs/ACTIVITY-INTELLIGENCE-IMPLEMENTATION-PLAN.md`; habits/coaching expansion, OCR, calendar, MCP, and external integrations are excluded from that slice. Retained signing, installer, and production-release gates still apply.
 
 ## Task 0: Human approval gate
 
@@ -115,7 +190,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 - [x] Privacy, encryption, terminology, Task 7, and Task 8 wording reflects testable boundaries.
 - [x] Full quality, advisory, signature, package/fuse, manifest, Defender, and bounded installer lifecycle verification passed with residual development-only risk recorded.
 
-**Verification:** Follow the exact TDD and verification order in `docs/AUDIT-REMEDIATION-PROPOSAL.md`; retain a new dated local proof rather than rewriting historical evidence.
+**Verification:** Follow the exact Implementation and verification order in `docs/AUDIT-REMEDIATION-PROPOSAL.md`; retain a new dated local proof rather than rewriting historical evidence.
 
 **Dependencies:** Approved Task 4 local result and founder approval on 2026-08-10; no release, real-data, provider, model, screenshot, agent, or Task 6 authority
 **Likely files:** approved remediation proposal, runtime/toolchain manifests, installer policy/tests, smoke harness, package/lock files, current specifications and review evidence
@@ -123,16 +198,16 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 5: Specify migration 0001
 
-**Status:** Drafted and mechanically validated on SQLite 3.53.1 on 2026-08-05; awaiting founder review and approval before Task 6.
+**Status:** Exact specification approved 2026-09-05; Task 6 authorized with synthetic data. OD-21 remains required before Task 7.
 
 **Description:** Define exact local actor, personal tenant, personal workspace, workspace membership, device, migration metadata, IDs, timestamps, constraints, and ownership semantics before SQL or ORM code.
 
 **Acceptance criteria:**
 
-- [ ] Tables and constraints satisfy ADR-0001 and the charter.
-- [ ] Personal, shared, workspace-owned, and organization-owned meanings are explicit.
-- [ ] Tenant accounts and representative personal/professional memory entities or contexts have distinct names, types, IDs, and authorization meaning; memory content never grants authority.
-- [ ] Upgrade, deletion, and future cloud-identity mapping behavior are documented.
+- [x] Tables and constraints satisfy ADR-0001 and the charter.
+- [x] Personal, shared, workspace-owned, and organization-owned meanings are explicit.
+- [x] Tenant accounts and representative personal/professional memory entities or contexts have distinct names, types, IDs, and authorization meaning; memory content never grants authority.
+- [x] Upgrade, deletion, and future cloud-identity mapping behavior are documented.
 
 **Verification:** Human review and approval of the data-model spec.
 
@@ -142,13 +217,15 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 6: Implement the numbered migration runner
 
-**Description:** Use TDD to create deterministic, checksum-aware migration application and future-version refusal behavior.
+**Status:** Complete locally — 2026-09-05. Standard-library migration runner, exact approved SQL, and 49 focused tests. Full quality gate: 85 tests plus format/lint/type/build checks. Wheel resource smoke passed. Evidence: `docs/reviews/STORAGE-MIGRATIONS-2026-09-05.md`. No live vault or startup wiring.
+
+**Description:** Create and verify deterministic, checksum-aware migration application and future-version refusal behavior.
 
 **Acceptance criteria:**
 
-- [ ] A focused test fails before implementation for missing migration behavior.
-- [ ] Migration 0001 applies once and records version/checksum/time.
-- [ ] Re-running is safe; unknown future schemas and checksum changes fail visibly.
+- [x] A focused test fails before implementation for missing migration behavior.
+- [x] Migration 0001 applies once and records version/checksum/time.
+- [x] Re-running is safe; unknown future schemas and checksum changes fail visibly.
 
 **Verification:** Focused pytest command defined during Task 2, then the full Python checks.
 
@@ -158,7 +235,9 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 7: Bootstrap the personal tenant and workspace
 
-**Description:** Use TDD to create one stable local actor, personal tenant, personal workspace, owner membership, and device without requiring a cloud account.
+**Status:** Not started. Task 6 is complete; OD-21 approval is still required. The concrete `docs/INSTALLATION-IDENTITY-PROPOSAL.md` is ready for review, with three small implementation slices and acceptance tests.
+
+**Description:** Create and verify one stable local actor, personal tenant, personal workspace, owner membership, and device without requiring a cloud account.
 
 **Acceptance criteria:**
 
@@ -169,13 +248,13 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 **Verification:** Focused bootstrap tests plus the full Python checks.
 
-**Dependencies:** Task 6
+**Dependencies:** Task 6 and separately approved OD-21 installation-identity contract
 **Likely files:** bootstrap service, DAL models, focused tests
 **Estimated scope:** Medium
 
 ## Task 8: Enforce tenant/workspace-scoped data access
 
-**Description:** Use TDD to require explicit tenant and workspace context for repository operations and reject cross-tenant/workspace access.
+**Description:** Require and verify explicit tenant and workspace context for repository operations and reject cross-tenant/workspace access.
 
 **Acceptance criteria:**
 
@@ -192,7 +271,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 9: Build the authenticated engine readiness surface
 
-**Description:** Use TDD to create a loopback-only engine with random port, per-session token, readiness response, and clean shutdown hook.
+**Description:** Create and verify a loopback-only engine with random port, per-session token, readiness response, and clean shutdown hook.
 
 **Acceptance criteria:**
 
@@ -208,7 +287,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 10: Supervise the engine from the shell
 
-**Description:** Use TDD to start the engine, wait for authenticated readiness, preserve it when the renderer closes, and terminate it safely on tray Quit.
+**Description:** Start and verify the engine, wait for authenticated readiness, preserve it when the renderer closes, and terminate it safely on tray Quit.
 
 **Acceptance criteria:**
 
@@ -244,7 +323,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 ## Task 12: Build fake hardware contracts and display topology
 
-**Description:** With TDD, define the typed hardware/capability contracts, pure dictation hardware state machine, fake audio adapter, and Electron main-process display topology service without adding a native dependency or capturing real audio.
+**Description:** Define and verify the typed hardware/capability contracts, pure dictation hardware state machine, fake audio adapter, and Electron main-process display topology service without adding a native dependency or capturing real audio.
 
 **Acceptance criteria:**
 
@@ -303,7 +382,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 
 **Status:** Future; do not start during Milestone 0 or before OD-18 and a feature-specific approval
 
-**Description:** With TDD, add only the minimum versioned request/result, execution-receipt, typed-failure, fake-adapter, and conformance behavior required by the first approved transcription, AI, or capture vertical slice. Do not select or install a model/runtime unless that same feature specification explicitly approves it.
+**Description:** Add and verify only the minimum versioned request/result, execution-receipt, typed-failure, fake-adapter, and conformance behavior required by the first approved transcription, AI, or capture vertical slice. Do not select or install a model/runtime unless that same feature specification explicitly approves it.
 
 **Acceptance criteria:**
 
@@ -358,7 +437,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 - [ ] The run ledger records source references, selected skill/model/provider versions, disclosure route, cost/latency, and terminal state without duplicating private content into diagnostics.
 - [ ] No background trigger, multi-agent orchestration, script-capable/third-party skill, browser automation, or external-agent control is introduced.
 
-**Verification:** Approved spec, TDD evidence, focused authority/run/context tests, full quality gate, security/interface/code-quality review, and manual source-link/result review.
+**Verification:** Approved spec, behavioral verification evidence, focused authority/run/context tests, full quality gate, security/interface/code-quality review, and manual source-link/result review.
 
 **Dependencies:** Completed Milestone 0; approved OD-18 if its capability seam is used; approved OD-19; applicable Google/ClickUp/Asana integration gates; approved model/provider, retention, credential, and data-storage decisions
 **Likely files:** Exact files chosen by the future approved feature specification; no speculative location is authorized now
@@ -382,7 +461,7 @@ Only one task may be in progress at a time. The architecture, stack proposal, OD
 - [ ] Cadence/event policy, duplicate suppression, usefulness, model accuracy, latency, CPU/RAM/GPU/NPU use, storage growth, battery impact, and honest unsupported coverage receive a written go/adjust/no-go result before any production promotion.
 - [ ] Product wording states that local-only encrypted storage reduces disclosure but cannot guarantee no screenshot contains a secret or protect an already unlocked Windows account from same-user malware.
 
-**Verification:** Approved feature and security specification, synthetic-first TDD/fault-injection evidence, dated Windows/hardware/model support matrix, local network-denial proof, encryption/retention/deletion proof, full quality gate, and security/code-quality review.
+**Verification:** Approved feature and security specification, synthetic-data behavioral and fault-injection evidence, dated Windows/hardware/model support matrix, local network-denial proof, encryption/retention/deletion proof, full quality gate, and security/code-quality review.
 
 **Dependencies:** Completed Milestone 0; baseline screen-context spike result; approved OD-18/ADR-0004; resolved OD-20 direction; implemented and proven at-rest encryption; exact capture/model/runtime/dependency approval; separate authorization before real data or outside testing
 **Likely files:** Exact files selected by the future approved specification; migration 0001 must not pre-build screenshot tables

@@ -75,10 +75,10 @@ This proposal does not authorize signing spend, an updater, outside testing, pub
 3. Update current review documents with the new versions, advisory state, artifact hash, exact proof limitations, and any remaining upstream risk.
 4. Do not commit or push until the founder separately requests it after reviewing the completed diff.
 
-## TDD and verification order
+## Implementation and verification order
 
-1. Write one focused failing installer-policy test for extra CLI overrides; implement the minimum exact validation; rerun focused and complete policy tests.
-2. Write one focused failing installed-tree/proof-binding test; implement the minimum validation; rerun manifest and policy tests.
+1. Implement exact validation for extra CLI overrides and verify it with focused and complete installer-policy tests.
+2. Implement installed-tree/proof-binding validation and verify it with focused, manifest and policy tests.
 3. Add the Unicode-path assertion and confirm it would reject the retained mojibake evidence before running a new smoke proof.
 4. Add toolchain-resolution verification, then prove the documented one-command gate works from a normal shell without temporary environment injection.
 5. Apply approved dependency changes with lifecycle scripts blocked; run lock/version checks, npm audit, registry-signature verification, the complete quality gate, Forge package/fuse/ASAR checks, and secret scans.

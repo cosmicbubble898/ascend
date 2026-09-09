@@ -4,19 +4,808 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src 'self'; img-src 'self'; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Ascend</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="ascend://app/app.js" defer></script>
+    <script src="ascend://app/productivity.js" defer></script>
+    <script src="ascend://app/clipboard.js" defer></script>
   </head>
   <body>
-    <main>
-      <p class="eyebrow">Foundation</p>
-      <h1>Ascend</h1>
-      <p>
-        The secure desktop shell is ready for the next approved product slice.
+    <header class="topbar">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="ascend-app-icon.png"
+          alt=""
+          aria-hidden="true"
+        />Ascend<span class="divider"></span
+        ><span class="area">Your personal workspace</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="zoom-controls" aria-label="Interface zoom">
+          <button id="zoom-out" aria-label="Zoom out" title="Zoom out (Ctrl+-)">
+            −
+          </button>
+          <button id="zoom-reset" title="Reset zoom (Ctrl+0)">100%</button>
+          <button id="zoom-in" aria-label="Zoom in" title="Zoom in (Ctrl++)">
+            +
+          </button>
+        </div>
+        <span class="local-badge"
+          ><span class="status-dot"></span> Local data · optional Claude</span
+        >
+      </div>
+    </header>
+    <nav class="workspace-tabs" aria-label="Workspace">
+      <button
+        id="tab-productivity"
+        class="workspace-tab selected"
+        aria-current="page"
+      >
+        Productivity
+      </button>
+      <button id="tab-transcription" class="workspace-tab">
+        Transcription
+      </button>
+      <button id="tab-clipboard" class="workspace-tab">Clipboard</button>
+      <button id="tab-settings" class="workspace-tab">Settings</button>
+    </nav>
+    <main id="productivity-page">
+      <section class="productivity-intro">
+        <div>
+          <p class="eyebrow">
+            UNDERSTAND YOUR DAY. MAKE ROOM FOR WHAT MATTERS.
+          </p>
+          <h1>A little more awareness.</h1>
+          <p class="subtitle">
+            Your work patterns, made visible. Privately, on this computer.
+          </p>
+        </div>
+        <button id="tracking-toggle" class="button primary" disabled>
+          Opening tracking…
+        </button>
+      </section>
+      <div class="tracking-strip">
+        <span id="tracking-indicator" class="tracking-indicator"></span>
+        <span id="tracking-status" role="status"
+          >Opening your local workspace…</span
+        >
+        <button id="activity-settings" class="text-button">
+          Tracking settings
+        </button>
+      </div>
+      <p id="activity-error" class="activity-error" role="alert" hidden></p>
+      <nav class="productivity-nav" aria-label="Productivity views">
+        <button id="show-day" class="selected">Today &amp; timeline</button>
+        <button id="show-plan">Plan &amp; focus</button>
+        <button id="show-review">Reviews &amp; coaching</button>
+      </nav>
+      <div id="pause-banner" class="pause-banner" role="status" hidden></div>
+      <div id="timer-banner" class="timer-banner" role="status" hidden></div>
+      <div class="day-controls">
+        <div>
+          <button id="previous-day" class="day-arrow" aria-label="Previous day">
+            ←
+          </button>
+          <input id="activity-date" type="date" aria-label="Activity date" />
+          <button id="next-day" class="day-arrow" aria-label="Next day">
+            →
+          </button>
+          <button id="today" class="text-button">Today</button>
+        </div>
+        <button id="delete-day" class="text-button">Delete this day</button>
+      </div>
+      <div id="day-pane">
+        <section class="activity-metrics" aria-label="Daily totals">
+          <article>
+            <span>Active time</span><strong id="metric-active">0m</strong
+            ><small>Time captured while active</small>
+          </article>
+          <article>
+            <span>Sustained work</span><strong id="metric-focus">0m</strong
+            ><small>Continuous active blocks over 1 minute</small>
+          </article>
+          <article>
+            <span>App changes</span><strong id="metric-switches">0</strong
+            ><small>Changes during captured activity</small>
+          </article>
+          <article>
+            <span>Idle time</span><strong id="metric-idle">0m</strong
+            ><small>After 5 minutes without input</small>
+          </article>
+        </section>
+        <section class="activity-card rhythm-card">
+          <div class="activity-card-heading">
+            <h2>The shape of your day</h2>
+            <span>Active minutes per hour</span>
+          </div>
+          <div
+            id="activity-hours"
+            class="activity-hours"
+            aria-label="Hourly activity chart"
+          ></div>
+          <div class="hour-labels">
+            <span>00:00</span><span>06:00</span><span>12:00</span
+            ><span>18:00</span><span>24:00</span>
+          </div>
+        </section>
+        <div class="productivity-columns">
+          <section class="activity-card timeline-card">
+            <div class="activity-card-heading">
+              <h2>Your timeline</h2>
+              <input
+                id="activity-search"
+                type="search"
+                placeholder="Find an app or project"
+                aria-label="Filter timeline"
+              />
+            </div>
+            <p class="activity-hint">
+              Review a block to correct its category or add a project. Gaps stay
+              uncounted.
+            </p>
+            <div id="activity-timeline" class="activity-timeline"></div>
+            <p id="timeline-count" class="activity-hint"></p>
+          </section>
+          <aside class="activity-aside">
+            <section class="activity-card">
+              <div class="activity-card-heading"><h2>Where time went</h2></div>
+              <div id="activity-apps"></div>
+            </section>
+            <section class="activity-card">
+              <div class="activity-card-heading">
+                <h2>Patterns to notice</h2>
+              </div>
+              <div id="activity-insights"></div>
+              <p class="activity-hint">
+                Calculated locally from rules, not an LLM. Reading, thinking,
+                and meetings may need your interpretation.
+              </p>
+            </section>
+          </aside>
+        </div>
+      </div>
+      <section id="plan-pane" hidden>
+        <div class="expansion-grid">
+          <article class="activity-card">
+            <h2>Give your day a direction.</h2>
+            <p class="activity-hint">
+              Plan up to 30 tasks for the selected day. Labels stay on this
+              computer.
+            </p>
+            <form id="plan-form" class="stack-form">
+              <label for="plan-title">Task</label
+              ><input
+                id="plan-title"
+                maxlength="100"
+                required
+                placeholder="What would make today worthwhile?"
+              />
+              <label for="plan-project">Project</label
+              ><input
+                id="plan-project"
+                maxlength="100"
+                placeholder="Optional project"
+              />
+              <label for="plan-minutes">Planned minutes</label
+              ><input
+                id="plan-minutes"
+                type="number"
+                min="1"
+                max="480"
+                value="25"
+                required
+              />
+              <div class="dialog-actions">
+                <button id="plan-reset" type="button" class="text-button">
+                  Clear form</button
+                ><button class="button primary" type="submit">Save task</button>
+              </div>
+              <p id="plan-error" class="activity-error" role="alert" hidden></p>
+            </form>
+          </article>
+          <article class="activity-card">
+            <h2>One thing at a time.</h2>
+            <label for="focus-plan">Focus task</label
+            ><select id="focus-plan">
+              <option value="">General focus</option>
+            </select>
+            <label for="focus-minutes">Session length</label
+            ><select id="focus-minutes">
+              <option value="15">15 minutes</option>
+              <option value="25" selected>25 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">60 minutes</option>
+              <option value="90">90 minutes</option>
+              <option value="120">120 minutes</option>
+            </select>
+            <div id="focus-clock" class="focus-clock">Ready when you are.</div>
+            <p id="focus-detail" class="activity-hint"></p>
+            <div class="dialog-actions">
+              <button id="focus-start" class="button primary">
+                Start focus</button
+              ><button id="break-start" class="button secondary">
+                Take a 5-minute break</button
+              ><button id="focus-cancel" class="text-button">End timer</button>
+            </div>
+            <p class="activity-hint">
+              Timers measure elapsed time. Your activity record measures
+              observed work. A selected task labels captured activity during its
+              focus session.
+            </p>
+            <label for="goal-minutes">Daily sustained-work goal (minutes)</label
+            ><input
+              id="goal-minutes"
+              type="number"
+              min="10"
+              max="480"
+              value="120"
+            />
+            <button id="goal-save" class="text-button">Save goal</button>
+            <p id="goal-progress" class="activity-hint"></p>
+          </article>
+        </div>
+        <article class="activity-card">
+          <h2>Your plan</h2>
+          <div id="task-list"></div>
+        </article>
+      </section>
+      <section id="review-pane" hidden>
+        <div class="activity-card-heading">
+          <h2>See what is changing.</h2>
+          <select id="review-range" aria-label="Review period">
+            <option value="day">Selected day</option>
+            <option value="week">7 days ending on selected day</option>
+          </select>
+        </div>
+        <p class="activity-hint">
+          Only observed activity is counted. Missing time is not zero
+          productivity. Comparisons may have different tracking coverage.
+        </p>
+        <div class="review-stats" id="review-stats"></div>
+        <div class="expansion-grid">
+          <article class="activity-card">
+            <h2>Time by day</h2>
+            <div id="review-days"></div>
+          </article>
+          <article class="activity-card">
+            <h2>Projects &amp; categories</h2>
+            <div id="review-projects"></div>
+            <div id="review-categories"></div>
+          </article>
+          <article class="activity-card">
+            <h2>Planned and unplanned</h2>
+            <div id="review-planning"></div>
+            <p class="activity-hint">
+              Unspecified means you have not labeled the activity. An app name
+              alone cannot tell us whether work was planned.
+            </p>
+          </article>
+          <article class="activity-card">
+            <h2>One experiment to try</h2>
+            <div id="review-coaching"></div>
+            <button id="coach-to-plan" class="text-button">
+              Add this experiment to my plan
+            </button>
+          </article>
+        </div>
+        <article class="activity-card">
+          <h2>Patterns across days</h2>
+          <div id="review-habits"></div>
+          <p class="activity-hint">
+            Recurring observations need at least three days with 30+ captured
+            active minutes each. They describe captured activity, not your
+            overall ability or effort.
+          </p>
+        </article>
+        <article class="activity-card">
+          <h2>Could this be automated?</h2>
+          <div id="review-workflows"></div>
+          <p class="activity-hint">
+            These are repeated app sequences, not proof of repeated task
+            content. Suggestions never execute an action.
+          </p>
+        </article>
+      </section>
+      <footer class="activity-footer">
+        <span id="activity-save-status"
+          >Encrypted local history · 30-day retention</span
+        ><span>Windows metadata · Optional ephemeral Claude vision</span>
+      </footer>
+    </main>
+    <main id="clipboard-page" hidden>
+      <section class="clipboard-intro">
+        <div>
+          <p class="eyebrow">EVERYTHING YOU COPY. READY WHEN YOU NEED IT.</p>
+          <h1>Your clipboard, remembered.</h1>
+          <p class="subtitle">
+            Text, images, audio, video, and files stay in private local history.
+          </p>
+        </div>
+        <div class="clipboard-batch-actions" aria-label="Copy recent items">
+          <button
+            class="button secondary clipboard-copy-recent"
+            data-count="3"
+            disabled
+          >
+            Copy last 3
+          </button>
+          <button
+            class="button secondary clipboard-copy-recent"
+            data-count="5"
+            disabled
+          >
+            Copy last 5
+          </button>
+          <button
+            class="button secondary clipboard-copy-recent"
+            data-count="10"
+            disabled
+          >
+            Copy last 10
+          </button>
+          <button
+            class="button primary clipboard-copy-recent"
+            data-count="15"
+            disabled
+          >
+            Copy last 15
+          </button>
+          <div class="clipboard-custom-copy">
+            <label for="clipboard-custom-count">Copy custom</label>
+            <select id="clipboard-custom-count" aria-label="Number of items">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+              <option>11</option>
+              <option>12</option>
+              <option>13</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18</option>
+              <option>19</option>
+              <option>20</option>
+            </select>
+            <button id="clipboard-copy-custom" class="button secondary">
+              Copy
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="clipboard-summary" aria-label="Clipboard history status">
+        <span><strong id="clipboard-count">0</strong> saved items</span>
+        <span id="clipboard-status" role="status"
+          >Opening clipboard history…</span
+        >
+      </section>
+      <section class="clipboard-history-card">
+        <div class="clipboard-heading">
+          <div>
+            <h2>Recent copies</h2>
+            <p id="clipboard-retention">
+              Saved locally for 7 days. Newest first.
+            </p>
+          </div>
+        </div>
+        <div id="clipboard-list" class="clipboard-list"></div>
+      </section>
+      <p class="clipboard-privacy">
+        Text and raw images are encrypted locally and removed after 7 days. File
+        entries retain only their Windows path, never a copy of the file.
+        Protected password-manager items are never retained.
       </p>
+    </main>
+    <dialog id="clipboard-preview-dialog" class="clipboard-preview-dialog">
+      <div class="clipboard-preview-heading">
+        <h2>Image preview</h2>
+        <button id="clipboard-preview-close" class="text-button">Close</button>
+      </div>
+      <img id="clipboard-preview-image" alt="Copied image preview" />
+    </dialog>
+    <main id="settings-page" hidden>
+      <section class="settings-intro">
+        <p class="eyebrow">YOUR ASCEND, CLEAR AND ACCOUNTABLE.</p>
+        <h1>Settings &amp; activity log.</h1>
+        <p class="subtitle">
+          See what Ascend captures, how it is processed, and what it costs.
+        </p>
+      </section>
+      <section class="settings-grid">
+        <article class="activity-card settings-profile-card">
+          <div class="card-heading">
+            <div>
+              <h2>About you</h2>
+              <p class="activity-hint">
+                Helps future coaching fit your work and goals.
+              </p>
+            </div>
+          </div>
+          <label for="profile-name">Your name</label>
+          <input
+            id="profile-name"
+            maxlength="80"
+            placeholder="How Ascend should address you"
+          />
+          <label for="profile-role">What do you do?</label>
+          <input
+            id="profile-role"
+            maxlength="120"
+            placeholder="Your role, work, or current focus"
+          />
+          <label for="profile-notes"
+            >What should Ascend understand about you?</label
+          >
+          <textarea
+            id="profile-notes"
+            maxlength="500"
+            rows="5"
+            placeholder="Goals, routines, or context that can improve your coaching"
+          ></textarea>
+          <div class="settings-save-row">
+            <span id="profile-status" class="activity-hint" role="status"></span
+            ><button id="profile-save" class="button primary">
+              Save profile
+            </button>
+          </div>
+        </article>
+        <article class="activity-card settings-controls-card">
+          <div class="card-heading">
+            <div>
+              <h2>Tracking controls</h2>
+              <p class="activity-hint">
+                Capture and privacy choices remain under your control.
+              </p>
+            </div>
+          </div>
+          <dl class="settings-facts">
+            <div>
+              <dt>Tracking</dt>
+              <dd id="settings-tracking-state">Opening…</dd>
+            </div>
+            <div>
+              <dt>Vision interval</dt>
+              <dd>60 seconds while active</dd>
+            </div>
+            <div>
+              <dt>Daily limit</dt>
+              <dd>1,440 screenshots</dd>
+            </div>
+            <div>
+              <dt>Storage</dt>
+              <dd>Encrypted on this device</dd>
+            </div>
+          </dl>
+          <button id="open-tracking-settings" class="button secondary">
+            Open tracking settings
+          </button>
+        </article>
+      </section>
+      <section class="activity-card usage-card">
+        <div class="card-heading">
+          <div>
+            <h2>Vision &amp; LLM usage</h2>
+            <p class="activity-hint">
+              All-time totals recorded by this installation.
+            </p>
+          </div>
+          <span id="vision-log-model" class="usage-model"></span>
+        </div>
+        <div class="usage-metrics">
+          <div>
+            <span>Total screenshots</span
+            ><strong id="usage-screenshots">0</strong>
+          </div>
+          <div><span>Processed</span><strong id="usage-success">0</strong></div>
+          <div><span>Failed</span><strong id="usage-failed">0</strong></div>
+          <div>
+            <span>Estimated LLM cost</span
+            ><strong id="usage-cost">$0.0000</strong>
+          </div>
+        </div>
+        <div class="processing-flow" aria-label="Screenshot processing flow">
+          <span>Active monitor</span><b>→</b><span>Memory-only image</span
+          ><b>→</b><span>Claude analysis</span><b>→</b
+          ><span>Encrypted evidence</span><b>→</b><span>Image discarded</span>
+        </div>
+        <p id="usage-token-detail" class="activity-hint"></p>
+      </section>
+      <section class="activity-card analysis-log-card">
+        <div class="card-heading">
+          <div>
+            <h2>Recent processing log</h2>
+            <p class="activity-hint">
+              The latest 100 analysis attempts. Screenshot images are never
+              stored.
+            </p>
+          </div>
+        </div>
+        <div class="analysis-log-head">
+          <span>Time</span><span>Result</span><span>Screenshot</span
+          ><span>Tokens</span><span>Time taken</span>
+        </div>
+        <div id="analysis-log" class="analysis-log"></div>
+      </section>
+    </main>
+    <dialog id="settings-dialog" class="activity-dialog">
+      <h2>Your tracking, your choice.</h2>
+      <p>
+        Ascend starts when you sign into Windows and keeps running in the system
+        tray when you close this window. A timed pause survives restarting.
+      </p>
+      <p id="startup-status" class="activity-hint" role="status"></p>
+      <label for="pause-hours">Pause tracking for</label>
+      <div class="inline-fields">
+        <select id="pause-hours">
+          <option value="4">4 hours</option>
+          <option value="24">1 day (24 hours)</option>
+          <option value="48">2 days (48 hours)</option></select
+        ><button id="pause-apply" class="button secondary">
+          Pause tracking</button
+        ><button id="resume-now" class="text-button">Resume now</button>
+      </div>
+      <p class="activity-hint">
+        Tracking resumes automatically. A countdown stays visible and a quiet
+        desktop reminder repeats every 30 minutes, including in the tray.
+        Windows notification settings may suppress desktop alerts.
+      </p>
+      <label class="checkbox-row"
+        ><input id="capture-details" type="checkbox" /> Include Windows window
+        titles</label
+      >
+      <p class="activity-hint">
+        Windows supplies these titles directly. UI Automation adds a separate
+        safety check before any screenshot. Titles can contain sensitive
+        information; filtering is best effort. Exclude a browser entirely if you
+        need to guarantee its activity stays out.
+      </p>
+      <label class="checkbox-row"
+        ><input id="vision-enabled" type="checkbox" /> Understand the active
+        monitor with Claude Haiku every 60 seconds when you are active</label
+      >
+      <p id="vision-status" class="activity-hint" role="status"></p>
+      <label class="setting-check"
+        ><input id="activity-analysis-enabled" type="checkbox" /> Organize
+        activity evidence with Claude Sonnet</label
+      >
+      <p id="activity-analysis-status" class="activity-hint" role="status"></p>
+      <p class="activity-hint">
+        Sonnet receives bounded app, window-title, UIA/domain, service, audio,
+        and Haiku-result metadata. The separate Sonnet key never receives the
+        screenshot.
+      </p>
+      <p class="activity-hint">
+        Only the monitor containing the foreground window is captured. Eligible
+        images are sent directly to Anthropic, analyzed into bounded activity
+        evidence, and discarded from memory. Images are not saved by Ascend.
+        Excluded and private windows are skipped. Maximum 1,440 screenshots per
+        day.
+      </p>
+      <label for="excluded-apps">Excluded applications</label>
+      <textarea
+        id="excluded-apps"
+        rows="4"
+        placeholder="chrome.exe&#10;whatsapp.exe"
+      ></textarea>
+      <p id="notification-health" class="activity-hint" role="status"></p>
+      <label for="break-reminder"
+        >Break reminder after continuous activity</label
+      >
+      <select id="break-reminder">
+        <option value="0">Off</option>
+        <option value="30">30 minutes</option>
+        <option value="60">60 minutes</option>
+        <option value="90">90 minutes</option>
+      </select>
+      <label for="ai-model">Optional local AI model</label>
+      <input
+        id="ai-model"
+        maxlength="100"
+        placeholder="Installed Ollama model name (optional)"
+      />
+      <p class="activity-hint">
+        Uses an already installed model through Ollama on this computer. Nothing
+        is downloaded. In Review, preview the app/title and select Ask local AI.
+        A suggestion changes nothing until you apply it. Cloud models are
+        refused.
+      </p>
+      <h3>Remembered window-context rules</h3>
+      <div id="context-rule-list"></div>
+      <p class="activity-hint">
+        One executable name per line. Applies to future capture. Use Delete this
+        day to remove existing history. Known password managers and detectable
+        private windows are excluded automatically.
+      </p>
+      <p class="activity-hint" id="vault-location"></p>
+      <p class="activity-hint">
+        Saved approximately every 30 seconds and when paused or closed. An
+        unexpected shutdown may lose the latest interval. Encrypted history is
+        tied to your Windows account; it is not a portable backup.
+      </p>
+      <p id="settings-error" role="alert" class="activity-error" hidden></p>
+      <div class="dialog-actions">
+        <button id="settings-cancel" class="button secondary">Cancel</button
+        ><button id="settings-save" class="button primary">
+          Save settings
+        </button>
+      </div>
+    </dialog>
+    <dialog id="correction-dialog" class="activity-dialog">
+      <h2 id="correction-title">Review activity</h2>
+      <p id="correction-context"></p>
+      <label for="block-category">Category</label
+      ><select id="block-category"></select>
+      <label for="block-project">Project</label
+      ><input
+        id="block-project"
+        maxlength="100"
+        placeholder="Optional, e.g. Ascend development"
+      />
+      <label for="block-task">Task</label
+      ><input id="block-task" maxlength="100" placeholder="Optional task" />
+      <label for="block-planning">Was this planned?</label
+      ><select id="block-planning">
+        <option value="unspecified">Unspecified</option>
+        <option value="planned">Planned</option>
+        <option value="unplanned">Unplanned</option>
+      </select>
+      <p id="category-reason" class="activity-hint"></p>
+      <label for="context-pattern"
+        >Remember this category/context when the window title contains</label
+      ><input
+        id="context-pattern"
+        maxlength="160"
+        placeholder="An identifying phrase, e.g. Ascend"
+      />
+      <button id="remember-context" class="text-button">
+        Save window-context rule
+      </button>
+      <div class="ai-review">
+        <p id="ai-preview" class="activity-hint"></p>
+        <button id="ask-local-ai" class="text-button">Ask local AI</button>
+        <p id="ai-result" role="status"></p>
+        <button id="apply-local-ai" class="button secondary" hidden>
+          Apply AI category
+        </button>
+      </div>
+      <p class="activity-hint">
+        App categories are editable. Communication and switching between apps
+        can be part of focused work.
+      </p>
+      <p id="correction-error" role="alert" class="activity-error" hidden></p>
+      <div class="dialog-actions">
+        <button id="correction-undo" class="text-button">Undo correction</button
+        ><button id="correction-rule" class="text-button">
+          Use category for this app
+        </button>
+      </div>
+      <div class="dialog-actions">
+        <button id="correction-cancel" class="button secondary">Cancel</button
+        ><button id="correction-save" class="button primary">Save block</button>
+      </div>
+    </dialog>
+    <dialog id="delete-dialog" class="activity-dialog">
+      <h2>Delete this day's activity and plans?</h2>
+      <p id="delete-description"></p>
+      <p>
+        Activity, its corrections, and all planned tasks for this day will be
+        removed from local history. This cannot be undone. Your settings and
+        other days remain.
+      </p>
+      <div class="dialog-actions">
+        <button id="delete-cancel" class="button secondary">
+          Keep activity</button
+        ><button id="delete-confirm" class="button cancel">
+          Delete activity
+        </button>
+      </div>
+    </dialog>
+    <main id="transcription-page" hidden>
+      <section class="intro">
+        <p class="eyebrow">A LITTLE LESS BUSYWORK. A LITTLE MORE CLARITY.</p>
+        <h1>Your words, kept here.</h1>
+        <p class="subtitle">
+          Turn a recording into text, privately on your computer.
+        </p>
+      </section>
+      <div class="workspace">
+        <section class="input-panel" aria-label="Recording and controls">
+          <div class="panel-label">
+            <span class="step">01</span> YOUR RECORDING
+          </div>
+          <div class="file-card" id="file-card">
+            <div class="audio-symbol" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <h2 id="file-name">Start with a recording</h2>
+            <p id="file-detail">
+              Choose English audio or an MP4 video.<br />Up to 2 hours, entirely
+              local.
+            </p>
+            <button class="button secondary" id="choose">
+              Choose recording <span aria-hidden="true">＋</span>
+            </button>
+            <p class="formats">WAV · MP3 · M4A · AAC · FLAC · MP4</p>
+          </div>
+          <div class="settings-row">
+            <span>Language</span><strong>English</strong>
+          </div>
+          <div class="settings-row">
+            <span>Transcription model</span><strong>NVIDIA Parakeet</strong>
+          </div>
+          <button class="button primary" id="start" disabled>
+            Transcribe recording <span aria-hidden="true">↗</span>
+          </button>
+          <button class="button cancel" id="cancel" hidden>
+            Cancel transcription
+          </button>
+          <div class="privacy-note">
+            <span aria-hidden="true">◇</span>
+            <p>
+              Audio stays on this computer.<br />Your transcript is saved only
+              when you choose.
+            </p>
+          </div>
+        </section>
+        <section class="output-panel" aria-label="Transcript">
+          <div class="output-heading">
+            <div class="panel-label">
+              <span class="step">02</span> TRANSCRIPT
+            </div>
+            <span id="result-badge">Ready when you are</span>
+          </div>
+          <div class="empty-transcript" id="empty-transcript">
+            <div class="document-symbol" aria-hidden="true">
+              <i></i><i></i><i></i>
+            </div>
+            <h2>A clear record of what was said.</h2>
+            <p>
+              Your words will appear here as the recording<br />is transcribed.
+              Paragraphs follow sentence endings, roughly every 30 seconds.
+            </p>
+          </div>
+          <div
+            id="transcript"
+            class="transcript"
+            tabindex="0"
+            aria-label="Transcription text"
+            hidden
+          ></div>
+          <div class="job-status" id="job-status" hidden>
+            <div class="progress-track"><div id="progress-fill"></div></div>
+            <div class="progress-labels">
+              <span id="status-text" role="status" aria-live="polite"></span
+              ><span id="elapsed"></span>
+            </div>
+          </div>
+          <div class="output-footer">
+            <span id="word-count">Nothing is saved automatically</span>
+            <div class="footer-actions">
+              <button class="text-button" id="clear" disabled>Clear</button
+              ><button class="button save" id="save" disabled>
+                Save .txt <span aria-hidden="true">↓</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer class="page-footer">
+        <span
+          >Save sensitive transcripts to a folder that does not sync to the
+          cloud.</span
+        ><span>English · Local processing · No account needed</span>
+      </footer>
     </main>
   </body>
 </html>

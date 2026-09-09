@@ -40,7 +40,21 @@ try {
         throw "Packaged engine version smoke failed: $versionOutput"
     }
 
-    $engineHash = (Get-FileHash -LiteralPath $engineExecutable -Algorithm SHA256).Hash
+    # Hash through .NET because some Windows PowerShell hosts lose utility
+    # cmdlet discovery after the PyInstaller child exits.
+    $hashStream = [System.IO.File]::OpenRead($engineExecutable)
+    try {
+        $hasher = [System.Security.Cryptography.SHA256]::Create()
+        try {
+            $engineHash = [System.BitConverter]::ToString($hasher.ComputeHash($hashStream)).Replace("-", "")
+        }
+        finally {
+            $hasher.Dispose()
+        }
+    }
+    finally {
+        $hashStream.Dispose()
+    }
     Write-Host "Packaged engine smoke passed: $engineHash"
 }
 finally {

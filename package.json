@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build:engine": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-engine.ps1",
     "build": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-shell.ps1",
-    "package": "npm run build:engine && npm run build && electron-forge package --arch=x64",
+    "package": "npm run build:engine && npm run build && node scripts/stage-feature-runtime.cjs && electron-forge package --arch=x64",
     "build:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\build-installer.ps1"
   },
   "devDependencies": {

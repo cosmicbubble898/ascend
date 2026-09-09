@@ -10,7 +10,7 @@
 Approved ADR-0003 and integration specification
     -> current official MCP/API/OAuth/provider-policy verification
         -> canonical connection + provider-profile + task/event contracts
-            -> fake remote MCP + fake API fallback TDD slice
+            -> fake remote MCP + fake API fallback implementation and verification slice
                 -> OD-13 connection-service/provider-provisioning specification and approval
                     -> Google Calendar API vertical slice
                     -> ClickUp MCP-first vertical slice + API/webhook fallback
@@ -48,8 +48,8 @@ All provider profiles share canonical ownership, permission, synchronization, pr
 
 ## Phase I2 — Synthetic transport and fallback slice
 
-- [ ] INT-5: With TDD, build a fake remote MCP server/client path covering initialization, capability discovery, an allowlisted paginated read, malformed/changed schema, timeout, rate limit, and disconnect.
-- [ ] INT-6: With TDD, build a fake official-API fallback returning equivalent canonical records and prove deterministic route selection and idempotent import.
+- [ ] INT-5: build a fake remote MCP server/client path covering initialization, capability discovery, an allowlisted paginated read, malformed/changed schema, timeout, rate limit, and disconnect.
+- [ ] INT-6: build a fake official-API fallback returning equivalent canonical records and prove deterministic route selection and idempotent import.
 - [ ] INT-7: Add structural redaction/secret scans and prove unknown or write tools fail closed before any network call.
 
 ### Checkpoint
@@ -74,8 +74,8 @@ All provider profiles share canonical ownership, permission, synchronization, pr
 
 ## Phase I4 — Google Calendar vertical slice
 
-- [ ] INT-11: With TDD, implement external-browser Google connect/disconnect and selected calendars through the approved OAuth boundary and stable Calendar API route.
-- [ ] INT-12: With TDD, import bounded Google events and display today's/upcoming meetings with source links, correct time zones, stale state, and failure recovery.
+- [ ] INT-11: implement external-browser Google connect/disconnect and selected calendars through the approved OAuth boundary and stable Calendar API route.
+- [ ] INT-12: import bounded Google events and display today's/upcoming meetings with source links, correct time zones, stale state, and failure recovery.
 - [ ] INT-13: Keep Google's Developer Preview MCP route behind the same profile and disabled for production until a current source review and contract tests approve it.
 
 ### Checkpoint
@@ -86,9 +86,9 @@ All provider profiles share canonical ownership, permission, synchronization, pr
 
 ## Phase I5 — Assigned-task vertical slices
 
-- [ ] INT-14: With TDD, connect ClickUp through official remote MCP, validate/allowlist only read tools, and select provider workspaces.
+- [ ] INT-14: connect ClickUp through official remote MCP, validate/allowlist only read tools, and select provider workspaces.
 - [ ] INT-15: Import only the authenticated person's open ClickUp tasks; contract-test REST/webhook fallback and reconciliation.
-- [ ] INT-16: With TDD, connect Asana through official V2 remote MCP, enforce the local read allowlist, and select provider workspaces.
+- [ ] INT-16: connect Asana through official V2 remote MCP, enforce the local read allowlist, and select provider workspaces.
 - [ ] INT-17: Import only the authenticated person's open Asana tasks; contract-test least-privilege REST fallback and reconciliation.
 
 ### Checkpoint

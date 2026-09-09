@@ -1,8 +1,32 @@
 # Implementation Plan: Ascend Milestone 0 Foundation
 
-**Status:** Foundation architecture, stack/version proposal, OD-17 Windows hardware behavior, and OD-20's future local screenshot-context direction are approved; OD-18 future-capability and OD-19 Agent OS architectures are proposed. Tasks 2–4A are complete locally. The exact OD-16 custom-cleanup route remains `go-local`; clean-machine and release qualification remain open. Task 5 specification work is unblocked, but migration implementation still requires human approval of its exact data-model specification, and OD-21 blocks Task 7. OD-03 selected synthetic-only plain storage. Named signing, encryption-before-real-data, screenshot/vision, credential, provider, runtime/model, agent/skill, and production gates remain in force.
+## Current delivery — productivity expansion, 2026-09-06
+
+The owner requested all seven productivity features. Implemented: automatic tracking and persistent timed pauses; reminders; explainable contextual classification with optional local-model suggestions; daily project/task planning; focus, breaks, and goals; daily/seven-day reviews; recurring-habit observations; concrete automation candidates. Scope and evidence are in docs/PRODUCTIVITY-EXPANSION-SPEC.md and docs/reviews/PRODUCTIVITY-EXPANSION-2026-09-06.md. Keep existing encrypted history, the transcription tool, and the original longer-term roadmap intact.
+
+## Current delivery — basic personal productivity
+
+The founder requested basic productivity before dictation, using native Windows APIs and accessibility metadata first. The bounded slice is specified in `docs/BASIC-PRODUCTIVITY-SPEC.md`: encrypted local activity storage, Win32 sampling with optional UI Automation checks, daily timeline/metrics, correction and app rules, pause/exclusions, and local retention/deletion. This sequence extends the existing architecture and leaves the later team platform in the roadmap. OCR and image analysis are separate additions. Verification uses synthetic data, isolated Electron profiles, and content-free Windows API checks.
+
+The first implementation is built and opened locally. Storage/UI checks and the Parakeet regression pass; live multi-monitor and lock/sleep qualification remain pending after Windows returned no foreground window during automated capture. Evidence: `docs/reviews/BASIC-PRODUCTIVITY-2026-09-05.md`.
+
+## Immediate delivery priority — local transcription
+
+The founder approved English-only local Parakeet transcription as the first usable feature. P1 (isolated setup/CUDA), P2 (bounded pipeline), P3 (Ascend UI/supervision), and P4 (two-hour/privacy proof) are implemented locally. Evidence and limitations: `docs/reviews/LOCAL-TRANSCRIPTION-2026-09-05.md`. Persistent account work remains behind Task 7/OD-21. No public distribution is included.
+
+Picker correction: reproduce the MP4 rejection in a focused test; enable MP4 through the existing MOV decoder and update the chooser/copy; verify actual video-plus-audio and video-only containers; run public MP4 through isolated Electron QA and review privacy/quality checks. No runtime or permission change is needed. Preserve the currently open owner's session.
+
+Paragraph delivery completed: timed sentence formatting passed TDD, word ownership is preserved with retained timestamps, and append-only formatted text is wired through worker/state. Sentence/abbreviation/partial-output cases, public two-hour GPU/Electron/export and the owner's whitespace-only comparison passed. The installed runtime and owner's open session were preserved. Recognition-boundary remediation remains separate.
+
+## Connections direction — 2026-09-05
+
+The founder reaffirmed MCP-first reuse and minimal custom provider development. `docs/CONNECTIONS-EXPERIENCE-PROPOSAL.md` and its CX-1 through CX-6 sequence are withdrawn, not pending work. Continue from the existing foundation and ADR-0003; supported provider actions need their own exact contract before implementation.
+
+**Status:** Foundation architecture, stack/version proposal, OD-17 Windows hardware behavior, and OD-20's future local screenshot-context direction are approved; OD-18 future-capability and OD-19 Agent OS architectures are proposed. Tasks 2–4A are complete locally. The exact OD-16 custom-cleanup route remains `go-local`; clean-machine and release qualification remain open. Task 5 was approved on 2026-09-05, and Task 6 is implemented and locally verified. OD-21 still blocks Task 7. OD-03 selected synthetic-only plain storage. Named signing, encryption-before-real-data, screenshot/vision, credential, provider, runtime/model, agent/skill, and production gates remain in force.
 
 ## Overview
+
+The founder's 2026-09-05 priority is helping people understand habits and improve productivity, supported by easy cross-app connections and meeting notes. The current shared foundation serves all three. After the foundation, prioritize a small, evidence-based habit/productivity experience before broader platform features; its exact behavior will be specified before coding.
 
 Milestone 0 creates a small, verifiable Windows project foundation: confirmed dependency choices, reproducible quality commands, an organization-ready tenant/identity/workspace model, an early installer/AV risk result, numbered database migrations, a tenant/workspace-scoped data-access layer, and a supervised shell-to-engine connection. It does not implement dictation, production meeting capture, productivity tracking, MCP, agents, skills, workflows, model-directed tools, or organization collaboration.
 
@@ -81,8 +105,8 @@ Approved foundation architecture
 
 ### Phase 2 — Organization-ready local data foundation
 
-- [ ] Task 5: Write and approve the exact migration-0001 data-model specification.
-- [ ] Task 6: Implement and test the numbered migration runner.
+- [x] Task 5: Write and approve the exact migration-0001 data-model specification. **Approved 2026-09-05.**
+- [x] Task 6: Implement and test the numbered migration runner. **Completed locally 2026-09-05; 49 focused tests and full quality gate passed.**
 - [ ] Task 7: Implement and test actor, personal tenant, personal workspace, membership, and device bootstrap.
 - [ ] Task 8: Implement and test the tenant/workspace-scoped data-access boundary.
 
@@ -92,7 +116,7 @@ Approved foundation architecture
 - [ ] Cross-tenant/workspace reads and writes fail in automated tests.
 - [ ] Tenant IDs and representative personal/professional memory-entity or context IDs cannot be confused.
 - [ ] No application module opens SQLite directly outside the data-access layer.
-- [ ] Re-running migrations is safe and deterministic.
+- [x] Re-running migrations is safe and deterministic.
 
 ### Phase 3 — Process foundation
 

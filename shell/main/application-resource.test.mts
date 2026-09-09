@@ -14,6 +14,21 @@ describe("resolveApplicationResource", () => {
     expect(
       resolveApplicationResource("ascend://app/styles.css", rendererRoot),
     ).toBe(path.join(rendererRoot, "styles.css"));
+    expect(
+      resolveApplicationResource("ascend://app/clipboard.js", rendererRoot),
+    ).toBe(path.join(rendererRoot, "clipboard.js"));
+    expect(
+      resolveApplicationResource(
+        "ascend://app/ascend-logo-mark.png",
+        rendererRoot,
+      ),
+    ).toBe(path.join(rendererRoot, "ascend-logo-mark.png"));
+    expect(
+      resolveApplicationResource(
+        "ascend://app/ascend-app-icon.png",
+        rendererRoot,
+      ),
+    ).toBe(path.join(rendererRoot, "ascend-app-icon.png"));
   });
 
   it("rejects unknown hosts, paths, and query strings", () => {

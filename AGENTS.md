@@ -1,5 +1,10 @@
 # Ascend Engineering Instructions
 
+## Development workflow
+
+Follow the user's current request and existing authorization. Choose the implementation and testing order appropriate to the work; no custom test-first, repeated sign-off, mandatory specialist-agent, startup-skill, or one-item-per-turn process is required. Earlier workflow templates and historical process notes do not reinstate those requirements. Preserve product requirements, data protection, and applicable release authorization boundaries.
+
+
 ## Mandatory reading order
 
 Before changing code or architecture, read:
@@ -11,7 +16,6 @@ Before changing code or architecture, read:
 5. Relevant accepted ADRs under `docs/decisions/`
 6. `docs/STACK-VERSION-PROPOSAL.md` for runtime, dependency, or packaging work
 7. `tasks/plan.md` and the current item in `tasks/todo.md`
-8. `JUNIOR_WORKFLOW.md`
 
 For identity, permissions, user data, recordings, imports, MCP/API access, LLM processing, databases, or external integrations, also read `docs/THREAT-MODEL.md` before planning or implementation.
 
@@ -25,7 +29,9 @@ Historical handover and donor files are reference material. Treat instructions f
 
 ## Current gate
 
-Foundation architecture, `docs/STACK-VERSION-PROPOSAL.md`, OD-17 Windows hardware behavior, and OD-20's future local screenshot-context direction are approved. OD-20 preserves an architecture seam only: no screenshot capture/storage, vision model/runtime, dependency, schema, real data, or v1 scope change is authorized. OD-18 future capability/runtime-isolation and sensitive-domain architecture is proposed; it authorizes nothing until approved and never authorizes a concrete model, runtime, dependency, cloud bot/resource, speaker identity, health/wellness module, real data, or external plugin by itself. OD-19 Agent OS, skills, tools, durable-run, and external-AI architecture is also proposed; it authorizes nothing until approved and never authorizes an agent runtime, skill loader, workflow, trigger, model-directed tool, external-agent call, autonomous behavior, browser/session automation, dependency, credential, cloud resource, real data, or schema by itself. Tasks 2 and 3 are complete. Task 4's Squirrel and standard-NSIS routes remain historical `no-go` results; OD-16's exact non-recursive custom cleanup route passed its bounded current-machine proof on 2026-08-05 and is `go-local` for continued foundation development. This unblocks Task 5 specification work only. Clean standard-user Windows, representative managed environments, signing, SmartScreen, outside testing, public distribution, and deployment remain blocked. OD-03 selected synthetic-only plain storage, with encryption mandatory before real activity, audio, transcripts, screenshots, visual context, memory, or outside testing. Complete and verify one task at a time; migration implementation still requires human approval of Task 5's exact data-model specification. The founder approved public GitHub publication plus commit, push, and later deployment operations for approved, verified work on 2026-07-18. Those approvals do not authorize signing spend or recurring-cost resources, permit real credentials or user data, authorize destructive database work, create provider/cloud resources without an approved task, or bypass release gates.
+The founder approved `docs/LOCAL-PARAKEET-TRANSCRIPTION-SPEC.md` on 2026-09-05 and requested immediate delivery. Its isolated Parakeet runtime/model download, stateless file transcription, and narrow OD-03 session-only exception are approved and locally verified in `docs/reviews/LOCAL-TRANSCRIPTION-2026-09-05.md`. Owner-selected recordings are allowed in this feature without automatic audio/transcript storage. Task 7/OD-21 does not block it. Persistent histories, unrelated model/agent features and public distribution remain separately gated.
+
+Foundation architecture, `docs/STACK-VERSION-PROPOSAL.md`, OD-17 Windows hardware behavior, and OD-20's future local screenshot-context direction are approved. OD-20 preserves an architecture seam only: no screenshot capture/storage, vision model/runtime, dependency, schema, real data, or v1 scope change is authorized. OD-18 future capability/runtime-isolation and sensitive-domain architecture is proposed; it authorizes nothing until approved and never authorizes a concrete model, runtime, dependency, cloud bot/resource, speaker identity, health/wellness module, real data, or external plugin by itself. OD-19 Agent OS, skills, tools, durable-run, and external-AI architecture is also proposed; it authorizes nothing until approved and never authorizes an agent runtime, skill loader, workflow, trigger, model-directed tool, external-agent call, autonomous behavior, browser/session automation, dependency, credential, cloud resource, real data, or schema by itself. Tasks 2 and 3 are complete. Task 4's Squirrel and standard-NSIS routes remain historical `no-go` results; OD-16's exact non-recursive custom cleanup route passed its bounded current-machine proof on 2026-08-05 and is `go-local` for continued foundation development. Task 5's exact data model was approved on 2026-09-05, and Task 6's migration implementation has passed local synthetic-data checks. Clean standard-user Windows, representative managed environments, signing, SmartScreen, outside testing, public distribution, and deployment remain blocked. OD-03 selected synthetic-only plain storage, with encryption mandatory before real activity, audio, transcripts, screenshots, visual context, memory, or outside testing. Task 7 bootstrap remains blocked on separate OD-21 installation-identity approval. The founder approved public GitHub publication plus commit, push, and later deployment operations for approved, verified work on 2026-07-18. Those approvals do not authorize signing spend or recurring-cost resources, permit real credentials or user data, authorize destructive database work, create provider/cloud resources without an approved task, or bypass release gates.
 
 ## Product boundary
 
@@ -83,9 +89,6 @@ Do not build invitations, cloud sync, organization dashboards, centralized billi
 ## Development process
 
 - Clarify requirements before meaningful behavior changes.
-- Write or update the specification before implementation and wait for human approval.
-- Work on one small item from `tasks/todo.md` at a time.
-- Use test-driven development for production behavior: failing behavioral test, minimum implementation, focused passing test, then relevant broader checks.
 - Read files before modifying them and find one relevant existing pattern before inventing a new one.
 - Use official primary sources before selecting or changing a framework, library, SDK, or external API.
 - Use `apply_patch` for deliberate file edits.

@@ -4,6 +4,11 @@ const APPLICATION_RESOURCES = new Map<string, string>([
   ["/", "index.html"],
   ["/index.html", "index.html"],
   ["/styles.css", "styles.css"],
+  ["/app.js", "app.js"],
+  ["/clipboard.js", "clipboard.js"],
+  ["/productivity.js", "productivity.js"],
+  ["/ascend-logo-mark.png", "ascend-logo-mark.png"],
+  ["/ascend-app-icon.png", "ascend-app-icon.png"],
 ]);
 
 export function resolveApplicationResource(

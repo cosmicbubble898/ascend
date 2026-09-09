@@ -2,6 +2,14 @@
 
 Agents must not guess these decisions. Resolve each item before its blocking point and record the answer in an ADR or approved specification update.
 
+## Current feature direction — basic personal productivity, 2026-09-05
+
+The founder requested basic productivity before dictation, using Windows APIs/accessibility before OCR or image analysis. `docs/BASIC-PRODUCTIVITY-SPEC.md` records the implementation slice and encrypted persistence design. It uses the existing personal ownership schema plus migration 0002 and keeps identity within the same encrypted snapshot, in a dedicated productivity vault. It does not implement the older separate installation.json/Task 7 proposal. The active product is personal; the team platform stays later. Client billing is not required for this feature.
+
+## Resolved feature approval — local Parakeet transcription
+
+The founder approved `docs/LOCAL-PARAKEET-TRANSCRIPTION-SPEC.md` on 2026-09-05: "Please build this. I want to use it today only." This covers P1-P4, exact runtime/model downloads, stateless local processing and the narrow OD-03 session-only exception. Local proof is recorded in `docs/reviews/LOCAL-TRANSCRIPTION-2026-09-05.md`. OD-21 and unrelated future capabilities remain separately gated.
+
 ## Decisions resolved on 2026-07-18, 2026-07-19, 2026-08-04, and 2026-08-05
 
 ### OD-01 — Approve the v1 specification — resolved 2026-07-18
@@ -128,13 +136,14 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Question:** What exact filename and application-data path, serialized format and validation limits, Windows ACL/inheritance rules, atomic write/replace and crash-recovery behavior, and reparse-point/symlink policy will protect the random installation identity used by personal bootstrap?
 - **Required scope:** Specify first-run creation, concurrent-process behavior, malformed/missing-file outcomes, backup/restore and cloned-vault handling, diagnostics redaction, uninstall retention, and deterministic tests. The decision must not derive identity from Windows account or hardware attributes.
 - **Blocks:** Task 7 implementation. Recording this decision does not approve a design or authorize Task 7.
-- **Record:** `docs/DATA-MODEL.md`.
+- **Proposal:** `docs/INSTALLATION-IDENTITY-PROPOSAL.md`, prepared 2026-09-05 for founder review. Fixed local vault paths, strict random-ID format, protected Windows permissions, atomic publication, crash recovery, and synthetic verification are specified. Approval is pending.
+- **Record:** `docs/DATA-MODEL.md` and `docs/INSTALLATION-IDENTITY-PROPOSAL.md`.
 
 ### OD-18 — Future capability, runtime-isolation, visual-context, and sensitive-domain architecture
 
 - **Question:** Approve `docs/FUTURE-CAPABILITY-ARCHITECTURE-PROPOSAL.md` and proposed ADR-0004 as the long-term seam for local/cloud AI, local transcription and LLM runtimes, CPU/GPU/NPU backends, OD-20's future local screenshot/vision capability, future meeting bots, speaker identity, and optional holistic personal modules?
 - **Recommendation:** Approve capability-oriented domain boundaries, explicit execution receipts and local/cloud policy, isolated resource-bounded workers, verified model/runtime artifacts, a local-only restricted screenshot/visual-context path, capture-source-neutral meeting records, evidence-based speaker identity, and deny-by-default health/wellbeing/voice/spiritual data classes.
-- **Boundary:** Approval does not select or add screenshot capture/storage, a runtime, dependency, model, model download, cloud resource, provider account, credential, external plugin system, voice profile, health schema/data, real data, spending, distribution, or deployment. Each concrete feature retains its own specification, source/license/security research, TDD, and human approval gate.
+- **Boundary:** Approval does not select or add screenshot capture/storage, a runtime, dependency, model, model download, cloud resource, provider account, credential, external plugin system, voice profile, health schema/data, real data, spending, distribution, or deployment. Each concrete feature retains its own specification, source/license/security research, verification, and human approval gate.
 - **Blocks:** The first production feature that would otherwise couple domain code directly to a model/provider/runtime, introduce a local model worker, add a cloud meeting bot or speaker identity, or create a holistic personal data path. It does not block Milestone 0, Task 4, or pure research.
 - **Approval text:** `Approved: FUTURE-CAPABILITY-ARCHITECTURE-PROPOSAL. Adopt OD-18 and ADR-0004. Preserve OD-20's future opt-in encrypted local screenshot and local-vision seam, but keep screenshot capture/storage, local-model, cloud-meeting-bot, speaker-identity, and holistic health/wellness implementation out of the current foundation; each requires a separately specified and approved release scope. Implement only the shared capability, provenance, failure, isolation, and data-class seams alongside the first relevant approved production slice; do not add a runtime, dependency, model, cloud resource, credential, real data, or external plugin system through this approval.`
 
@@ -143,9 +152,15 @@ Agents must not guess these decisions. Resolve each item before its blocking poi
 - **Question:** Approve `docs/AGENT-OS-AND-SKILLS-ARCHITECTURE-PROPOSAL.md` and proposed ADR-0005 as the long-term seam for Ascend to become a trusted personal agent, Agent OS, and single interface across replaceable cloud/local models, reusable skills, typed tools, connectors, and documented external-agent providers?
 - **Recommendation:** Approve Ascend ownership of identity, workspace, memory, context disclosure, policy, approvals, typed execution, durable run state, verification, and audit. Keep models, skills, tools, connectors, workflows, triggers, grants, approvals, and runs separate; a skill never grants authority and model output never executes directly.
 - **External-AI boundary:** Ascend using provider model APIs, an approved ChatGPT/Claude/other client using Ascend MCP/API, and Ascend invoking a documented external-agent API are separate routes with separate credentials, context, grants, and audit. Browser/UI automation, consumer-session cookies, and private endpoints are not foundational control routes.
-- **Boundary:** Approval does not create or select an agent runtime, skill loader, Skills Hub, workflow engine, durable-run schema, model/provider SDK, external-agent integration, connector, provider account, credential, cloud resource, browser automation, autonomous/background behavior, third-party skill mechanism, real data, spending, distribution, or deployment. Concrete contracts and persistence remain feature-specification, current-source, security, TDD, and human-approval gated.
+- **Boundary:** Approval does not create or select an agent runtime, skill loader, Skills Hub, workflow engine, durable-run schema, model/provider SDK, external-agent integration, connector, provider account, credential, cloud resource, browser automation, autonomous/background behavior, third-party skill mechanism, real data, spending, distribution, or deployment. Concrete contracts and persistence remain feature-specification, current-source, security, verification, and human-approval gated.
 - **Blocks:** The first implementation of an agent profile, skill loader, workflow, trigger, durable agent run, model-directed tool, external-agent invocation, autonomous/background execution, multi-agent orchestration, or organization skill catalog. It does not block Milestone 0, Task 4, provider read-only synchronization, or pure research.
 - **Approval text:** `Approved: AGENT-OS-AND-SKILLS-ARCHITECTURE-PROPOSAL. Adopt OD-19 and ADR-0005. Treat Ascend as the trusted agent and single-interface layer; keep models, external agents, skills, tools, connectors, memory, permissions, approvals, and run state separate. Skills never grant authority, model output never executes directly, and external side effects remain typed, policy-checked, previewed, approval-gated, idempotent, verified, and audited. Do not implement an agent runtime, skill loader, autonomous workflow, external ChatGPT/Claude control, dependency, credential, cloud resource, real data, or browser/session automation through this approval.`
+
+### OD-22 — Connections proposal withdrawn — resolved 2026-09-05
+
+- **Founder correction:** Minimize custom integrations for a single developer; reuse official MCP servers through one shared connection layer with simple sign-in and supported reads/actions.
+- **Decision:** Withdraw `docs/CONNECTIONS-EXPERIENCE-PROPOSAL.md` and its API-first/CX sequence. Retain it as history. ADR-0003 remains authoritative; API adapters need demonstrated provider-specific necessity.
+- **Boundary:** This retired proposal creates no approval gate. Exact action permissions, live-service provisioning, credentials, costs, and existing foundation gates remain separate.
 
 ## Future organization decisions
 

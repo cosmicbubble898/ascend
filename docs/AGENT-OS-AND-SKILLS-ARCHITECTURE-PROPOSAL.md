@@ -427,7 +427,7 @@ This slice validates the skill registry, context broker, model router, read-only
 3. After Milestone 0, select and specify the read-only Daily Work Brief as a candidate first agentic slice.
 4. Re-verify current provider SDKs, retention, pricing, MCP maturity, and external-agent APIs at implementation time.
 5. Define exact typed contracts, run persistence, data disclosures, risk policy, evaluation cases, and failure recovery in that feature specification.
-6. Use TDD: first prove denied authority, cross-workspace isolation, prompt-injection resistance, bounded execution, and read-only behavior; then add the minimum implementation.
+6. Implement and verify denied authority, cross-workspace isolation, prompt-injection resistance, bounded execution, and read-only behavior.
 7. Consider external writes, background triggers, specialist agents, script-capable skills, or organization catalogs only through separate approved slices.
 
 ## Approval requested

@@ -6,7 +6,10 @@ describe("createMainWindowOptions", () => {
   it("isolates and sandboxes the renderer without Node integration", () => {
     const preloadPath = "C:\\Ascend\\dist\\shell\\preload.js";
 
-    const options = createMainWindowOptions(preloadPath);
+    const iconPath = "C:\\Ascend\\shell\\renderer\\ascend-app-icon.png";
+    const options = createMainWindowOptions(preloadPath, iconPath);
+
+    expect(options.icon).toBe(iconPath);
 
     expect(options.webPreferences).toMatchObject({
       contextIsolation: true,

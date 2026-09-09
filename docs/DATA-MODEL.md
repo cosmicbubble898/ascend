@@ -1,12 +1,16 @@
 # Migration 0001 Data-Model Specification
 
-**Status:** Proposed for founder approval; no migration code authorized yet
+**Status:** Approved by founder on 2026-09-05 for synthetic implementation; Task 6 complete locally
 **Owner task:** Task 5 in `tasks/todo.md`
 **Prepared:** 2026-08-05
 
+**Later implementation:** The requested basic productivity slice adds `0002_productivity.sql`, leaving the exact migration 0001 SQL below unchanged. Its engine-owned, scoped activity/correction/settings tables and encrypted snapshot persistence are described in `docs/BASIC-PRODUCTIVITY-SPEC.md`. The live personal identity is retained within that encrypted productivity vault; the older separate installation.json proposal remains distinct.
+
 ## Approval gate
 
-This document is the exact schema and behavior proposal for migration 0001. Do not write migration SQL, repository code, or a database file until the founder approves this specification. Approval authorizes synthetic-data implementation through Tasks 6-8 only; it does not authorize real user data, encryption claims, cloud identity, integrations, memory records, organization features, screenshots, agents, or deployment.
+The 2026-09-06 requested expansion adds migration 0003_productivity_tools.sql: scoped daily task plans and per-segment project/task/planning context. Existing migrations 0001/0002 remain immutable. The encrypted v2-to-v3 upgrade is covered by a history-and-identity preservation test. See PRODUCTIVITY-EXPANSION-SPEC.md.
+
+This document is the exact approved schema and behavior for migration 0001. The founder approved proceeding on 2026-09-05 in response to the explicit storage-specification approval request. Approval authorizes synthetic-data implementation through Tasks 6-8 only, retaining OD-21 before Task 7; it does not authorize real user data, encryption claims, cloud identity, integrations, memory records, organization features, screenshots, agents, or deployment.
 
 OD-02 and ADR-0001 approved the minimal organization-ready principle. OD-02A keeps Ascend account/authorization boundaries separate from entities represented inside memory. OD-03 permits plain SQLite/files only for synthetic development data. Task 4 now has a bounded local installer `go` result, so this specification may proceed.
 
@@ -430,6 +434,8 @@ Before Task 7 implementation, OD-21 must separately specify and approve the inst
 
 This audit remediation records the gate only. It does not select a filename, format, permission implementation, filesystem operation, dependency, or recovery policy, and it does not authorize Task 7 implementation.
 
+The concrete proposed contract is now in `docs/INSTALLATION-IDENTITY-PROPOSAL.md` (2026-09-05). It remains pending separate founder approval; Task 6 completion does not resolve OD-21.
+
 ## Ownership and visibility contract for later records
 
 Migration 0001 has no user-owned content table. Every later owned/shareable record must nevertheless follow this approved shape from its first migration:
@@ -534,10 +540,10 @@ Email addresses, provider account IDs, Windows accounts, and organization member
 
 - Proposed schema: Written on 2026-08-05
 - SQLite/source review: SQLite 3.53.1 observed; official STRICT, WITHOUT ROWID, foreign-key, transaction, and PRAGMA behavior reviewed on 2026-08-05
-- Security review: Completed for the specification; implementation review remains required
-- Focused test list: Proposed above; not yet implemented
-- Founder decision: Pending
+- Security review: Task 6 implementation reviewed; see `docs/reviews/STORAGE-MIGRATIONS-2026-09-05.md`. Tasks 7-8 retain their own reviews.
+- Focused test list: Task 6 has 49 passing migration/constraint tests. Tasks 7-8 are not implemented.
+- Founder decision: Approved 2026-09-05: "Go ahead and do the development" in response to the explicit storage-specification approval request. Productivity/habit improvement is the leading product priority, alongside cross-app use and meeting notes.
 
-Recommended approval text:
+Recorded approval scope:
 
 > Approved: `docs/DATA-MODEL.md` migration-0001 specification. Proceed with Tasks 6-8 using synthetic data only, one task at a time, and test-driven development. Do not add real data, encryption claims, integrations, memory/entity tables, screenshots, models, agents, organization features, cloud resources, credentials, outside testing, publishing, or deployment through this approval.
